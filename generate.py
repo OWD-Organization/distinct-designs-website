@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Generate the static Distinct Designs Construction website.
 
-Run from anywhere:
-    python3 website/generate.py
+Run from the repository root:
+    python3 generate.py
 
 Output is plain HTML. Vercel does not need this script.
 """

@@ -1154,7 +1154,7 @@ h4 {
 }
 
 /* -----------------------------------------------------------------
-   19. FULL WEBSITE (website/) — pages beyond the ad landing pages
+   19. FULL WEBSITE — pages beyond the ad landing pages
    ----------------------------------------------------------------- */
 .site-nav__links a[aria-current="page"] { color: var(--color-clay-text); }
 

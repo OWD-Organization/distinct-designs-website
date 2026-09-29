@@ -1,94 +1,21 @@
 # Distinct Designs Construction website
 
-Static HTML, CSS, and vanilla JS for the company website. It is self-contained in this folder so it can be deployed as its own Vercel project with **Root Directory = `website`**.
+Static company site for Distinct Designs Construction (HTML, CSS, and vanilla JS). There is no build step. `generate.py` and `pages.py` only regenerate the HTML when the copy changes. Vercel serves this repository root as-is.
 
-It does not replace the ad landing pages at the repository root. Those stay where they are.
+Deployed as the Vercel project **distinct-designs-website** (for example `https://distinct-designs-website.vercel.app/`). Framework preset: Other. No build command. Output directory: the repository root.
 
-No build step is required to deploy. `generate.py` and `pages.py` only regenerate the HTML if the copy changes:
+The site stays **noindexed until launch**:
 
-```bash
-python3 generate.py
-python3 -m http.server 8000
-# open http://localhost:8000/
-```
+- `<meta name="robots" content="noindex, nofollow">` on every page
+- `X-Robots-Tag: noindex, nofollow` on all paths (`vercel.json`)
+- `robots.txt` with `User-agent: *` and `Disallow: /`
 
-## Do not index this site yet
+The client's live ad landing pages are not in this repository. They stay in [OWD-Organization/distinct-designs-lp](https://github.com/OWD-Organization/distinct-designs-lp).
 
-Every page is `noindex, nofollow` until the client's domain is switched. Three layers:
+## Open client TODOs
 
-1. `<meta name="robots" content="noindex, nofollow">` on every page.
-2. `robots.txt` disallows all crawlers.
-3. `vercel.json` sends `X-Robots-Tag: noindex, nofollow` on every route.
-
-There is no sitemap.
-
-### Removing noindex at launch
-
-Do all of these in the same release, after the new domain is the one that should rank:
-
-1. Delete the robots meta tag from `head()` in `generate.py`, regenerate, or remove the tag from each `index.html`.
-2. Replace `robots.txt` with a normal allow rule, and only then add a sitemap if you want one.
-3. Remove the `X-Robots-Tag` header from `vercel.json`.
-4. Add a self-referencing canonical on each page pointing at the new domain (canonicals are intentionally omitted while the site is noindex).
-5. Confirm the CSLB license number before publishing it sitewide. See TODOs.
-6. Point DNS at this Vercel project only after the tags above are gone. Leaving noindex on the live domain hides the site from Google.
-
-The `X-Robots-Tag` header applies when this folder is the Vercel root. On a preview of the whole repository, the meta tag is what keeps `/website/` out of the index.
-
-## Deploy as its own Vercel project
-
-1. New Project, same Git repository.
-2. Root Directory: `website`.
-3. Framework preset: Other. No build command. Output directory: leave blank (the folder itself is the site).
-4. Do not attach the production domain until noindex is removed.
-5. Leave the existing landing-page project on the repository root alone.
-
-Clean URLs come from folder `index.html` files (`/services/custom-home-build/`).
-
-## Lead forms
-
-Forms are the same public LeadConnector widgets already embedded on distinctdesignsconstruction.com. They are not a new backend.
-
-| Form | Widget id | Used on |
-|---|---|---|
-| Planning guide | `YQYYVz28qqwYJWbc8ZUw` | Home, service pages, guide landings |
-| Contact | `IbFWLZlZNETBrImKFVjN` | Home, contact |
-| Guide variant 1 | `d3BGxWF34ECOkqZdjpSI` | `/guides/custom-home-builder-1/` |
-| Guide variant 2 | `BAGEhP3HzpQSiPNrrCqf` | `/guides/custom-home-builder-2/` |
-| Guide variant 3 | `9M9TcIWN7yJsuz9QWG1R` | `/guides/custom-home-builder-3/` |
-| Agent referral | `MyS2TrJSOhTn1mitpihf` | `/partners/referral-agreement/` |
-
-TODO: confirm LeadConnector accepts submissions from the new domain.
-
-## TODOs and missing information
-
-- **Street address.** The current site only publishes "Joshua Tree, CA". No street, ZIP, or postal address was found. JSON-LD uses locality and region only.
-- **Two license numbers are published today.** The homepage FAQ says License #1039394. The ad landing pages and the guide pages say License #1145786. Both are copied where they appeared. The sitewide footer does not pick one. Confirm which CSLB number should be shown everywhere before launch.
-- **Sun Mesa.** `/sun-mesa/` on the current site repeats the Hilltop case study (including the words "Hilltop build") and uses the La Mirada photo set. Copied as published. See the HTML comment on `/projects/sun-mesa/`.
-- **Cookie statement.** `/opt-out-preferences/` is only the Complianz shortcode `[cmplz-document type="cookie-statement" region="us"]`. That statement did not render in the page source. The visible cookie-banner sentence is included, with a TODO on the page.
-- **Gallery category URLs 404.** `/general-construction/`, `/home-remodels/`, `/kitchen-remodels/`, and `/tile-stone-masonry/` are linked from the current projects page and return 404. The card titles and photos are kept on `/projects/`. FooGallery albums exist in WordPress but are not public pages, so their full image sets were not copied.
-- **Joel photo.** The file beside Joel's name on the current about page has the alt text "General Lead Tile and Stone Installer". The heading is Joel, tile and stone designer and installer. Randy and Fredo were duplicated in the source layout and are listed once.
-- **Tracking not copied.** The current site loads Google tags `G-ZN3C7W7TY1` and `GT-PLHFGS6K`, and Facebook pixel `2036241113908440`. They were left off this noindex build. Add them at launch if they should carry over. The ad landing pages' WhatConverts and Feedbucket scripts were not added here.
-- **Hero-form landing variants** are A/B tests of the same three services. They are not separate service pages.
-- **Price bands differ by source.** Guide pages say project levels from $250K to $4.5M+. Custom-home landing copy says ground-up homes from $870K to $5M+. Both are kept on the pages they came from.
-- **Coachella** (the city) is listed on the landing pages and was added to the combined service-area list. The current site footer did not name it separately from "Coachella Valley".
-- **Phone punctuation.** The current footer link text is missing a closing parenthesis: `(760 221-4290`. The contact page shows `(760) 221-4290`. This site uses the contact-page formatting.
-- **Remodels.** `/remodels/` is the preserved page from `https://distinctdesignsconstruction.com/best-general-contractor/` (nav label Remodels). It was not dropped. Its copy is a whole-home pitch, so it is not the fourth service. `/services/remodels/` is the modest kitchens, bathrooms, and additions page, taken from the homepage FAQ and the kitchen and bath lists already on the services page. No project count, price, timeline, or testimonial is published for that smaller scope. Additions are named and not described. The footer and mobile link "Best general contractor" still opens `/remodels/`.
-- **Service area pages do not invent local facts.** Yucca Valley, Joshua Tree, Palm Springs, Palm Desert, La Quinta, and Indian Wells each have a page under `/service-areas/`. There is still no sitemap (the site is noindex). These six URLs are the internal list, and the same six are linked from the header, the footer service-area sentence, and the areas lists. Other published cities (Twentynine Palms, Pioneer Town, Landers, Morongo Valley, Desert Hot Springs, Cathedral City, Rancho Mirage, Indio, Coachella) do not have pages. No city page states a project count, a street address, or a license number. Joshua Tree only has the published locality "Joshua Tree, CA" and Benoit R.'s review. Yucca Valley has Katie Lee's review and the Yelp listing title, which is not an office address. Palm Springs and Indian Wells are named on the services page as places where luxury custom homes are built. Palm Desert and La Quinta are on the service-area list and the homepage FAQ, and on the planning guide pages. They are not in that services-page sentence. No city-specific photo is published. HTML comments on each city page repeat these limits.
-
-## Service area pages
-
-| City | URL |
-|---|---|
-| Yucca Valley | `/service-areas/yucca-valley/` |
-| Joshua Tree | `/service-areas/joshua-tree/` |
-| Palm Springs | `/service-areas/palm-springs/` |
-| Palm Desert | `/service-areas/palm-desert/` |
-| La Quinta | `/service-areas/la-quinta/` |
-| Indian Wells | `/service-areas/indian-wells/` |
-
-There is no service-area overview page. The header item "Service Areas" opens these six links. It is not a link to a hub.
-
-## Photography
-
-Real project photos already in this repository are reused (logo, remodel and ADU heroes, project tiles, crew and detail shots). The stock custom-home hero (`hero-loggia`, marked `data-placeholder`) was not used. Photos that exist only on the current site (team, Mario Trujillo, project galleries, planning-guide cover) were downloaded into `images/site/`.
+- **License number.** The homepage FAQ says License #1039394. The guide pages say License #1145786. Confirm which CSLB number should appear sitewide before launch.
+- **No street address.** Published locality is "Joshua Tree, CA" only. No street, ZIP, or postal address.
+- **Sun Mesa.** `/projects/sun-mesa/` duplicates the Hilltop case study (including "Hilltop build") and uses the La Mirada photo set.
+- **Cookie policy.** `/opt-out-preferences/` still contains the Complianz shortcode `[cmplz-document type="cookie-statement" region="us"]`, which does not render as a statement.
+- **Remodels additions.** `/services/remodels/` names additions and does not describe them. That page also has no project count, price, timeline, or testimonial for the smaller kitchens-and-baths scope.
