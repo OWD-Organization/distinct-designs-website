@@ -254,7 +254,8 @@ def nav(slug):
       <a class="btn btn--nav-primary" href="{href(slug, "contact")}">Schedule a Consultation</a>
     </div>
     <button class="site-nav__toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav__mobile">
-      <span></span><span></span><span></span>
+      <span class="site-nav__toggle-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span class="site-nav__toggle-label">Menu</span>
     </button>
   </div>
   <nav class="site-nav__mobile" id="site-nav__mobile" aria-label="Mobile">
@@ -475,7 +476,11 @@ def project_tiles(slug):
 
 
 def city_anchor(slug, name):
-    """Link a published city name when that city has a page."""
+    """Link a published city name when that city has a page.
+
+    Use this for service-area lists and menus. Location and NAP lines
+    stay plain text; link_cities does not wrap those.
+    """
     target = AREA_TARGET.get(name)
     if not target:
         return name
@@ -494,15 +499,40 @@ def areas_html(slug=""):
 _CITY_RE = re.compile(
     r"\b(Indian Wells|Palm Springs|Palm Desert|Yucca Valley|Joshua Tree|La Quinta)\b(?! Rustic)"
 )
+# A city followed by ", CA" is the business locality (eyebrow, footer,
+# contact address), not a service-area mention. "serves Joshua Tree, CA"
+# is still about the area, so that one stays linked.
+_LOCALITY_AFTER = re.compile(r",\s*(?:CA|California)\b", re.I)
+_SERVES_BEFORE = re.compile(r"\b(?:serves|serving|serve)\s+$", re.I)
+_WHERE_BASED_AFTER = re.compile(r"\s+is where\b", re.I)
+_WHERE_BASED_BEFORE = re.compile(
+    r"\b(?:based in|located in|location as|location:)\s*$", re.I
+)
 _SKIP_CITY_LINK = {
     "a", "h1", "h2", "h3", "h4", "h5", "h6",
     "script", "style", "title", "textarea", "button", "option",
 }
 
 
+def _is_base_location(data, start, end):
+    """True when the city is where the business is based, not a service area."""
+    before = data[max(0, start - 80):start]
+    after = data[end:end + 24]
+    if _LOCALITY_AFTER.match(after) and not _SERVES_BEFORE.search(before):
+        return True
+    if _WHERE_BASED_AFTER.match(after):
+        return True
+    if _WHERE_BASED_BEFORE.search(before):
+        return True
+    return False
+
+
 class _CityLinker(HTMLParser):
-    """Wrap published city names in body text. Skip headings, titles,
-    meta attributes, scripts, and text that is already inside a link."""
+    """Wrap published city names in body text when they name a service area.
+
+    Skip headings, titles, meta attributes, scripts, text already inside a
+    link, and locality lines (a city plus ", CA", "based in", or "location as").
+    """
 
     def __init__(self, slug):
         super().__init__(convert_charrefs=False)
@@ -543,6 +573,8 @@ class _CityLinker(HTMLParser):
         self.out.append(f"<!{decl}>")
 
     def _repl(self, match):
+        if _is_base_location(match.string, match.start(), match.end()):
+            return match.group(0)
         return city_anchor(self.slug, match.group(1))
 
     def result(self):

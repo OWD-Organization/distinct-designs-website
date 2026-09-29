@@ -441,7 +441,9 @@ h4 {
 /* Compact tap-to-call, phones only. From 760px the existing number button
    in .site-nav__actions takes over, so this one is hidden there. */
 .site-nav__call {
+  /* Equal auto margins center it in the gap between the logo and the menu. */
   margin-left: auto;
+  margin-right: auto;
   flex-shrink: 0;
   gap: 0.35rem;
   padding: 0.45rem 0.7rem;
@@ -459,25 +461,35 @@ h4 {
 .site-nav__toggle {
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 0;
   width: 32px;
   height: 32px;
   flex-shrink: 0;
   background: none;
   border: none;
   padding: 0;
+  color: var(--color-charcoal);
 }
-.site-nav__toggle span {
+.site-nav__toggle-icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+}
+.site-nav__toggle-icon span {
   display: block;
   width: 100%;
   height: 2px;
-  background: var(--color-charcoal);
+  background: currentColor;
   transition: transform var(--dur-fast) var(--ease-editorial), opacity var(--dur-fast) var(--ease-editorial);
 }
-.site-nav__toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.site-nav__toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-.site-nav__toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.site-nav__toggle[aria-expanded="true"] .site-nav__toggle-icon span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.site-nav__toggle[aria-expanded="true"] .site-nav__toggle-icon span:nth-child(2) { opacity: 0; }
+.site-nav__toggle[aria-expanded="true"] .site-nav__toggle-icon span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.site-nav__toggle-label { display: none; }
 
 .site-nav__mobile {
   display: flex;
@@ -1142,6 +1154,32 @@ h4 {
     padding-left: 1rem;
     padding-right: 1rem;
   }
+  /* Bigger bars plus a MENU label. The whole control is one tap target. */
+  .site-nav__toggle {
+    width: auto;
+    min-width: 44px;
+    min-height: 44px;
+    height: auto;
+    gap: 3px;
+  }
+  .site-nav__toggle-icon {
+    width: 32px;
+    height: 21px;
+    gap: 6px;
+  }
+  .site-nav__toggle-icon span { height: 3px; }
+  .site-nav__toggle[aria-expanded="true"] .site-nav__toggle-icon span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+  .site-nav__toggle[aria-expanded="true"] .site-nav__toggle-icon span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+  .site-nav__toggle-label {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+    color: currentColor;
+  }
 }
 
 @media (min-width: 760px) {
@@ -1309,24 +1347,25 @@ a.city-link {
   .hero--team { min-height: min(50vw, 85vh); }
 }
 
-/* Phones only. Tablet and desktop keep the full-height hero anchored to
-   the bottom. Here the copy starts near the top and the hero is only as
-   tall as that copy, so there is no empty band of photograph. */
+/* Phones only. The photograph stays full-screen, as it was before the
+   hero was shrunk to its copy. The copy moves to the top; the rest of
+   the photo shows underneath. Tablet and desktop stay bottom-anchored. */
 @media (max-width: 767px) {
   .hero,
   .hero--page {
-    min-height: 0;
+    min-height: calc(100svh - var(--nav-h));
     align-items: flex-start;
   }
   .hero__content {
-    padding: 2.5rem var(--space-md) 2rem;
+    padding: 2.5rem var(--space-md) 0;
   }
   .hero__scrim {
     background: linear-gradient(
       180deg,
-      rgba(7, 6, 20, 0.86) 0%,
-      rgba(7, 6, 20, 0.74) 55%,
-      rgba(7, 6, 20, 0.62) 100%
+      rgba(7, 6, 20, 0.88) 0%,
+      rgba(7, 6, 20, 0.78) 46%,
+      rgba(7, 6, 20, 0.32) 72%,
+      rgba(7, 6, 20, 0.06) 100%
     );
   }
 }
