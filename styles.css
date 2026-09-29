@@ -1347,27 +1347,46 @@ a.city-link {
   .hero--team { min-height: min(50vw, 85vh); }
 }
 
-/* Phones only. The photograph stays full-screen, as it was before the
-   hero was shrunk to its copy. The copy moves to the top; the rest of
-   the photo shows underneath. Tablet and desktop stay bottom-anchored. */
+/* Phones only. The photograph stays full-screen. Copy stays at the top
+   (same 40px inset as before). The button group drops to the bottom of
+   the hero, about 40px above the edge, with the photo between them.
+   A short screen grows the hero instead of letting the buttons cover
+   the copy. Tablet and desktop stay bottom-anchored. */
 @media (max-width: 767px) {
   .hero,
   .hero--page {
     min-height: calc(100svh - var(--nav-h));
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: stretch;
   }
   .hero__content {
-    padding: 2.5rem var(--space-md) 0;
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    /* Top inset is unchanged. Bottom inset is the offset under the buttons. */
+    padding: 2.5rem var(--space-md) 2.5rem;
+  }
+  .hero__content .hero-cta {
+    margin-top: auto;
+    /* When there is no spare height, this keeps the buttons off the paragraph. */
+    padding-top: var(--space-md);
   }
   .hero__scrim {
     background: linear-gradient(
       180deg,
       rgba(7, 6, 20, 0.88) 0%,
-      rgba(7, 6, 20, 0.78) 46%,
-      rgba(7, 6, 20, 0.32) 72%,
-      rgba(7, 6, 20, 0.06) 100%
+      rgba(7, 6, 20, 0.70) 30%,
+      rgba(7, 6, 20, 0.12) 50%,
+      rgba(7, 6, 20, 0.38) 72%,
+      rgba(7, 6, 20, 0.58) 86%,
+      rgba(7, 6, 20, 0.62) 100%
     );
   }
+  /* Homepage: the first section's 7.5rem top padding, plus the pull
+     quote's own top margin, was the white band under the hero. The
+     sticky call bar is position:fixed and does not add to it. */
+  .hero + .section:has(> .pull-line:first-child) { padding-top: 2.5rem; }
+  .hero + .section > .pull-line:first-child { margin-top: 0; }
 }
 
 .page-intro { color: var(--color-text-muted); max-width: 62ch; }
