@@ -438,6 +438,24 @@ h4 {
   flex-shrink: 0;
 }
 
+/* Compact tap-to-call, phones only. From 760px the existing number button
+   in .site-nav__actions takes over, so this one is hidden there. */
+.site-nav__call {
+  margin-left: auto;
+  flex-shrink: 0;
+  gap: 0.35rem;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.75rem;
+  line-height: 1;
+  letter-spacing: 0.06em;
+}
+.site-nav__call-icon {
+  display: block;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
 .site-nav__toggle {
   display: flex;
   flex-direction: column;
@@ -445,6 +463,7 @@ h4 {
   gap: 5px;
   width: 32px;
   height: 32px;
+  flex-shrink: 0;
   background: none;
   border: none;
   padding: 0;
@@ -1117,8 +1136,17 @@ h4 {
 /* Desktop */
 /* Phone + CTA pair appears well before the link list does, so the number stays
    visible on tablets while the hamburger still carries the links. */
+@media (max-width: 759px) {
+  .site-nav__inner {
+    gap: 0.625rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
 @media (min-width: 760px) {
   .site-nav__actions { display: flex; }
+  .site-nav__call { display: none; }
 }
 
 @media (min-width: 1024px) {
@@ -1279,6 +1307,28 @@ a.city-link {
 .hero--team .hero__image { object-position: center top; }
 @media (min-width: 1100px) {
   .hero--team { min-height: min(50vw, 85vh); }
+}
+
+/* Phones only. Tablet and desktop keep the full-height hero anchored to
+   the bottom. Here the copy starts near the top and the hero is only as
+   tall as that copy, so there is no empty band of photograph. */
+@media (max-width: 767px) {
+  .hero,
+  .hero--page {
+    min-height: 0;
+    align-items: flex-start;
+  }
+  .hero__content {
+    padding: 2.5rem var(--space-md) 2rem;
+  }
+  .hero__scrim {
+    background: linear-gradient(
+      180deg,
+      rgba(7, 6, 20, 0.86) 0%,
+      rgba(7, 6, 20, 0.74) 55%,
+      rgba(7, 6, 20, 0.62) 100%
+    );
+  }
 }
 
 .page-intro { color: var(--color-text-muted); max-width: 62ch; }
