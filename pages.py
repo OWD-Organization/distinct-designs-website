@@ -1,11 +1,17 @@
-"""Page bodies for the Distinct Designs website. Imported by generate.py."""
+"""Page bodies for the Distinct Designs website (v2, Oct 2026 change brief).
+
+Imported by generate.py. Every "TODO(v2)" marks an open item from the brief:
+placeholder photos, DRAFT copy for Nick to approve, and facts still to confirm.
+"""
+
+import re
 
 import generate as g
 
 H = g.hero
+PH = g.page_hero
 F = g.form_embed
 Q = g.quotes_html
-A = g.areas_html
 P = g.project_tiles
 W = g.write_page
 S = g.page_shell
@@ -16,15 +22,20 @@ WHY = g.why_cards
 GAL = g.gallery
 HREF = g.href
 LD = g.faq_ld
+TOWNS = g.town_links
+REVIEWS = g.reviews_section
 PHONE = g.PHONE_DISPLAY
 TEL = g.PHONE_TEL
 EMAIL = g.EMAIL
 GUIDE = g.GUIDE_FORM
 CONTACT = g.CONTACT_FORM
+JOURNEY = g.JOURNEY
+JL = g.JOURNEY_LABEL
+LIC = g.LICENSE_EYEBROW
 
-# Cover of the published flipbook (the planning-guide page embeds the same Heyzine
-# book). Flat cover, real title. The CSS mockup adds the tilt and shadow.
 COVER_ALT = "The Ultimate Planning Guide: What It Really Takes to Build a $1M+ Custom Home in the Desert, by Nicholas Aguilar"
+
+HOME_DESCRIPTION = "Luxury custom homes from $1M and whole-home remodels from $250K across the Coachella Valley and High Desert. Third-generation builder. CA Lic. #1145786."
 
 
 def book(slug):
@@ -33,312 +44,197 @@ def book(slug):
 </figure>"""
 
 
+def journey_cta(slug, heading, text, image=None, guide=False):
+    """Closing call to action: Start Your Journey button (plus the guide form on service pages)."""
+    p = g.prefix(slug)
+    if image:
+        src, alt, w, h = image
+        media = f'<div class="lead-section__media"><img src="{p}{src}" alt="{alt}" width="{w}" height="{h}" loading="lazy"></div>'
+    else:
+        media = f'<div class="lead-section__media lead-section__media--book">{book(slug)}</div>'
+    form = F(GUIDE, "Get the free planning guide") if guide else ""
+    guide_line = '<p class="lead-section__note">Not ready to talk yet? Get the free Ultimate Planning Guide below.</p>' if guide else ""
+    return f"""<section class="lead-section" id="form">
+  {media}
+  <div class="lead-section__content">
+    <h2>{heading}</h2>
+    <p>{text}</p>
+    <div class="link-row" style="margin-top:1rem"><a class="btn btn--primary" href="{HREF(slug, JOURNEY)}">{JL}</a> <a class="btn btn--secondary" href="tel:{TEL}">Call {PHONE}</a></div>
+    {guide_line}
+    {form}
+  </div>
+</section>"""
+
+
 def build_all():
     home()
     about()
-    services()
     service_build()
     service_remodel()
     service_adu()
-    service_partial_remodels()
+    our_process()
     projects()
     project_pages()
-    contact()
+    start_your_journey()
     privacy()
     optout()
     planning()
     thanks()
-    remodels()
     partners()
     referral()
     guides()
     service_areas()
-    missing()
+    not_found()
+
+
+SERVICE_CARDS = [
+    ("Custom Homes", "services/custom-home-build",
+     "Ground-up custom homes from $1M to $5M+. One team from design to handing you the keys, planned and priced before groundbreaking.",
+     "View custom homes"),
+    ("Luxury Remodels", "services/whole-home-remodel",
+     "Whole-home remodels from $250K, planned and priced as one project and built by one crew.",
+     "View luxury remodels"),
+    ("Guest Houses &amp; ADUs", "services/custom-adu",
+     "For properties that already have a home. Built to the standard of the house beside it.",
+     "View guest houses"),
+]
+
+
+def service_cards(slug):
+    bits = []
+    for title, target, text, more in SERVICE_CARDS:
+        bits.append(f"""<a class="service-card" href="{HREF(slug, target)}">
+      <h3>{title}</h3>
+      <p>{text}</p>
+      <span class="service-card__more">{more}</span>
+    </a>""")
+    return '<div class="service-grid service-grid--three">' + "".join(bits) + "</div>"
+
+
+CASE_LABELS = {
+    "alturas": ("&ldquo;$200,000+ error caught before groundbreaking&rdquo;", "Alturas · Ground-up custom home"),
+    "cubero": ("&ldquo;$177,000+ net savings in pre-construction&rdquo;", "Cubero · Ground-up custom home"),
+    "hilltop": ("&ldquo;Their contractor vanished with $70,000. We finished it right.&rdquo;", "Hilltop · Rescue and completion"),
+}
 
 
 def home():
     slug = ""
+    p = g.prefix(slug)
+    guide_link = f'\n    <p class="hero__guide-link"><a href="#guide">Not ready to talk yet? Get the free Ultimate Planning Guide &rarr;</a></p>'
     body = H(
         slug,
-        "images/hero-remodel.webp",
-        "Finished open-plan living room and kitchen with a stone feature wall, oak floors and sliding doors onto the desert",
-        1920, 960,
-        f'{g.prefix(slug)}images/hero-remodel-1200.webp 1200w, {g.prefix(slug)}images/hero-remodel.webp 1920w',
-        "Joshua Tree, CA · High Desert &amp; Coachella Valley",
-        "The High Desert's Luxury Custom Home Builder",
-        "Distinct Designs Construction specializes exclusively in luxury custom homes and high-end renovations across the high desert and greater Southern California.",
-        HREF(slug, "contact"),
-        "Start Your Journey",
+        "images/site/Custom-Desert-Home.webp",
+        "Cubero, a finished ground-up custom home by Distinct Designs, seen from above with its pool and desert landscape",
+        1536, 1024, "",
+        "Coachella Valley · High Desert",
+        "Luxury Custom Homes &amp; Whole-Home Remodels",
+        "Custom luxury homes from $1M to $5M+. Whole-home remodels from $250K. We don't build homes for everyone. We build signature homes for clients who refuse to settle.",
+        HREF(slug, JOURNEY), JL,
+        placeholder="Homepage hero: swap in the finished Cubero drone shot (current image is the existing Cubero aerial).",
+        extra=guide_link,
     )
     body += f"""
-<section class="section">
-  <p class="pull-line reveal">We don't build homes for everyone. We build signature homes for clients who refuse to settle.</p>
-  <div class="service-grid" style="margin-top:2rem">
-    <a class="service-card" href="{HREF(slug, "services/custom-home-build")}">
-      <h3>Custom luxury home construction</h3>
-      <p>Ground-up homes from $870K to $5M+, with one crew and a budget matched before groundbreaking.</p>
-      <span class="service-card__more">View custom homes</span>
-    </a>
-    <a class="service-card" href="{HREF(slug, "services/whole-home-remodel")}">
-      <h3>Whole-home renovations</h3>
-      <p>Designer kitchens, spa bathrooms, and full transformations, priced as one number before demo day.</p>
-      <span class="service-card__more">View remodels</span>
-    </a>
-    <a class="service-card" href="{HREF(slug, "services/custom-adu")}">
-      <h3>Custom ADU construction</h3>
-      <p>Guest suites built to the same standard as our luxury homes, with permitting handled.</p>
-      <span class="service-card__more">View ADUs</span>
-    </a>
-  </div>
-  <p class="page-intro" style="margin-top:1.5rem">Also: <a href="{HREF(slug, "services/remodels")}">designer kitchens and bathrooms</a>, and full-service architecture and engineering coordination. <a href="{HREF(slug, "services")}">See every service</a>.</p>
-</section>
 <section class="section section--tinted" id="guide">
+  <!-- Step 4: the guide link opens this GHL capture form, never the PDF. -->
   <div class="guide-layout">
     {book(slug)}
     <div class="guide-layout__copy">
       <p class="eyebrow">Free guide</p>
       <h2>Get your free guide. Know before you hire.</h2>
       <p class="page-intro">Two homes can be the same size, yet one costs $900K and the other $2.5M. Most builders never explain why.</p>
-      <p class="guide-cta"><a class="btn btn--primary" href="{HREF(slug, "planning-guide")}">Read the planning guide</a></p>
     </div>
     <div class="guide-layout__form reveal">{F(GUIDE, "Get your free planning guide")}</div>
   </div>
 </section>
-<section class="section section--split">
+<section class="section" id="services">
+  <div class="section__header"><h2>What we build</h2></div>
+  {service_cards(slug)}
+</section>
+<section class="section section--tinted" id="who-we-build-for">
+  <h2>Who we build for</h2>
+  <div class="two-col" style="margin-top:1.5rem">
+    <article class="info-card"><h3>The right fit</h3><ul class="check-list">
+      <li>New custom homes from $1M to $5M+.</li>
+      <li>Whole-home remodels from $250K+.</li>
+      <li>Guest houses and ADUs on established properties.</li>
+      <li>Clients who want one team accountable from design to keys.</li>
+    </ul></article>
+    <article class="info-card"><h3>Not the right fit</h3><ul class="check-list check-list--muted">
+      <li>Repairs, handyman work, or projects decided on the lowest bid.</li>
+    </ul></article>
+  </div>
+</section>
+<section class="section" id="case-studies">
+  <div class="section__header">
+    <h2>What the right builder catches</h2>
+    <p>Three projects, three problems found before they became expensive.</p>
+  </div>
+  {P(slug, ["alturas", "cubero", "hilltop"], CASE_LABELS)}
+</section>
+<section class="section section--split section--tinted" id="now-building">
+  <div>
+    <p class="eyebrow">Now building</p>
+    <h2>Alturas</h2>
+    <p class="page-intro">A ground-up custom home, framed and moving.</p>
+    <!-- TODO(v2): optional line "Ask us about walking an active build." Add only if Nick wants to offer tours. -->
+    <div class="link-row"><a class="btn btn--nav" href="{HREF(slug, "projects/alturas")}">Read the Alturas story</a><a class="btn btn--primary" href="{HREF(slug, JOURNEY)}">{JL}</a></div>
+  </div>
+  <div class="section--split__media reveal">
+    <img src="{p}images/site/Alturas-build.jpg" alt="Alturas custom home under construction: framed and sheathed walls against a blue desert sky" width="800" height="533" loading="lazy">
+  </div>
+</section>
+<section class="section" id="process">
+  <div class="section__header">
+    <h2>Our process</h2>
+    <p>One team from first conversation to keys.</p>
+  </div>
+  {STEPS(g.PROCESS_SHORT)}
+  <div class="link-row"><a class="btn btn--nav" href="{HREF(slug, "our-process")}">See the full process</a></div>
+</section>
+<section class="section section--split section--tinted" id="owner">
   <div>
     <p class="eyebrow">Owner</p>
-    <h2>Nicholas Aguilar</h2>
-    <h3 class="section--split__subhead">The High Desert's luxury custom home builder</h3>
-    <p>Your home is one of the most significant investments you will ever make. Not just financially, but in the life you are building around it.</p>
-    <p>Distinct Designs Construction specializes exclusively in luxury custom homes and high-end renovations across the high desert and greater Southern California.</p>
-    <p>We don't build homes for everyone. We build signature homes for clients who refuse to settle.</p>
-    <p>High quality custom luxury home construction · Whole-home renovations · Designer kitchens and bathrooms · Custom ADU construction · Architecture and engineering coordination</p>
+    <h2>Nick Aguilar</h2>
+    <!-- TODO(v2) DRAFT for Nick to approve: first-person owner note, written only from facts already on the site (third generation, Mario Trujillo, 18 years in the desert). -->
+    <div class="prose" data-draft="owner-note">
+      <p>I'm a third-generation builder. My grandfather, Mario Trujillo, a decorated Marine Corps Master Gunnery Sergeant, put me to work at 11 and taught me discipline, pride in craftsmanship, and to treat every project like it's my own.</p>
+      <p>I've spent 18 years building in the desert, and those standards still guide every home we take on. We take on a limited number of projects each year, so you have direct access to me and our leadership from the first conversation to the day we hand you the keys.</p>
+      <p><strong>Nick Aguilar</strong><br>Owner, Distinct Designs Construction</p>
+    </div>
     <div class="link-row"><a class="btn btn--nav" href="{HREF(slug, "about")}">Meet the team</a></div>
   </div>
   <div class="section--split__media reveal">
-    <img src="{g.prefix(slug)}images/site/Nick-DD.jpg" alt="Nicholas Aguilar, owner of Distinct Designs Construction" width="800" height="1000" loading="lazy">
+    <img src="{p}images/site/Nick-DD.jpg" alt="Nick Aguilar, owner of Distinct Designs Construction" width="800" height="1000" loading="lazy">
   </div>
 </section>
-<section class="section" id="projects">
-  <div class="section__header">
-    <h2>Signature builds and remodels</h2>
-    <p>Every project is handled by our in-house team, from first consultation to final walkthrough.</p>
-  </div>
-  {P(slug)}
-  <div class="link-row"><a class="btn btn--nav" href="{HREF(slug, "projects")}">All projects</a></div>
-</section>
-<section class="section section--tinted" id="testimonials">
-  <h2>What our clients say</h2>
-  {Q(g.HOME_QUOTES)}
-</section>
-<section class="section" id="faq">
+{REVIEWS(g.HOME_QUOTES, tinted=False)}
+<section class="section section--tinted" id="faq">
   <h2>Frequently asked questions</h2>
+  {g.TIMELINE_TODO}
   {FAQ("home", g.HOME_FAQ)}
 </section>
-<section class="section section--tinted" id="areas-served">
-  <h2>Areas we serve</h2>
-  <p class="page-intro">Joshua Tree, CA, and the High Desert and Coachella Valley.</p>
-  {A(slug)}
+<section class="section" id="where-we-build">
+  <h2>Where we build</h2>
+  {TOWNS(slug)}
 </section>
 <section class="lead-section" id="form">
   <div class="lead-section__media">
-    <img src="{g.prefix(slug)}images/footer-cta.webp" alt="Finished great room with wood floors and desert-view windows" width="1600" height="1200" loading="lazy">
+    <img src="{p}images/process-crew-remodel.webp" alt="The Distinct Designs crew standing in front of a completed desert home under a clear blue sky" width="1200" height="1600" loading="lazy">
   </div>
   <div class="lead-section__content">
-    <h2>Start your custom home journey now</h2>
-    <p>Talk with Distinct Designs about a custom home, remodel, or ADU. Call <a href="tel:{TEL}">{PHONE}</a> or send a note below.</p>
-    {F(CONTACT, "Start your custom home journey")}
+    <h2>Start your journey.</h2>
+    <p>Tell us about your project. Every inquiry is reviewed personally, and you'll hear back the same day.</p>
+    <!-- TODO(v2) GHL form builder (out of scope here): new fields per Step 11. See start-your-journey page for the full list. -->
+    {F(CONTACT, "Start your journey")}
+    <p class="lead-section__note">We'll be in touch the same day.</p>
   </div>
 </section>
 """
     W(slug, S(slug,
-              "Luxury Custom Home Builder in Joshua Tree, CA | Distinct Designs Construction",
-              "Distinct Designs Construction builds luxury custom homes and high-end renovations in Joshua Tree, Yucca Valley, Palm Springs, and the Coachella Valley. Call (760) 221-4290.",
+              "Distinct Designs Construction · Luxury Custom Homes &amp; Remodels · Coachella Valley &amp; High Desert",
+              HOME_DESCRIPTION,
               body, LD(g.HOME_FAQ)))
-
-
-def about():
-    slug = "about"
-    p = g.prefix(slug)
-    body = f"""
-<header class="hero hero--page hero--team">
-  <img class="hero__image" src="{p}images/process-crew-home.webp" alt="The Distinct Designs crew inside a completed custom home, desert mountains beyond the open sliders" width="1200" height="900">
-  <div class="hero__scrim" aria-hidden="true"></div>
-  <div class="hero__content reveal">
-    <p class="eyebrow">About Distinct Designs</p>
-    <h1>Your trusted Joshua Tree luxury custom home builder</h1>
-  </div>
-</header>
-<section class="section">
-  <h2>Dedication to my grandfather, Mario Trujillo</h2>
-  <div class="portrait-row reveal" style="margin:1.5rem 0">
-    <img src="{p}images/site/Mario-Trulillo-old-school-2.jpg" alt="Mario Trujillo, earlier in his career" width="900" height="1100" loading="lazy">
-    <img src="{p}images/site/Mario-Trulillo.jpg" alt="Mario Trujillo" width="900" height="1100" loading="lazy">
-  </div>
-  <div class="prose">
-    <p>Mario Trujillo, a decorated war veteran and Master Gunnery Sergeant of the United States Marine Corps, laid the foundation upon which Distinct Designs Construction was built. He upheld principles of hard work, diligence, adaptability, and treating every employee like family. These standards continue to guide our company today.</p>
-    <p>Every one of us at Distinct Designs Construction has been shaped and influenced by Mr. Trujillo's leadership, whether through direct mentorship or through the guidance passed down from those he mentored. His values and craftsmanship became the blueprint that continues to branch throughout the company, instilling integrity, diligence, and a commitment to building quality from the ground up.</p>
-    <p>Mr. Trujillo taught us the importance of working hard, taking pride in our craft, going the extra mile, and never settling for anything less than excellence. But more than that, he built a culture rooted in loyalty, mutual respect, and a shared commitment to high standards, where every project was approached with the same diligence to excellence.</p>
-    <p>He didn't just take us on as employees, he mentored us as young adults and molded us into men. His dedication went beyond teaching skills; it was about building character and passing down values that would endure. His legacy of excellence continues to shape Distinct Designs Construction.</p>
-    <p>Mr. Trujillo laid the concrete foundation and paved the road for Distinct Designs Construction to thrive. His mentorship, diligence, and relentless pursuit of excellence continue to be the backbone of our success. We are forever grateful for his guidance, vision, and commitment to nurturing both our skills and our character.</p>
-    <p>Thank you, Mario Trujillo, for everything you have done. Your unwavering dedication and wisdom have built more than just a company, you have built a family. Distinct Designs Construction stands strong today because of the foundation you laid. We will honor you by carrying your legacy forward through the principles and values you instilled in all of us.</p>
-  </div>
-</section>
-<section class="section section--split section--tinted">
-  <div>
-    <h2>We are one of the best luxury custom home builders serving Joshua Tree and the surrounding areas.</h2>
-    <p>We specialize in custom new homes, custom cabinets, custom luxury kitchen and bathroom remodels, custom tile and stone, backsplashes, showers, mosaics, and floors, creating products in a variety of themes, including but not limited to: Spanish, Mediterranean, Industrial, Modern, Elegant, Clean, and Joshua Tree Rustic.</p>
-  </div>
-  <div class="section--split__media reveal">
-    <img src="{p}images/site/Team-Distinct-Designs-768x576.jpg" alt="Distinct Designs tile, stone, and general construction professionals" width="768" height="576" loading="lazy">
-  </div>
-</section>
-<section class="section">
-  <div class="card-grid">
-    <article class="info-card"><h3>Our team</h3><p>With over 50 plus years of combined experience, our team can turn any client's dream into a reality.</p></article>
-    <article class="info-card"><h3>Our mission</h3><p>Our mission is to provide a high-quality product that radiates elegance and creativity. We exceed in this because of the drive we share with our employees, the innovative nature of our senior designers, and the coordination of our managers. Providing secure jobs for the working class derives their ambition to invest hard work and time in a company that they can grow with and achieve greatness in their workmanship, providing a professional but family environment that cares for their employees and clients.</p></article>
-    <article class="info-card"><h3>Our vision</h3><p>Our vision is to gain long-lasting relationships with our clients by exceeding their expectations and gaining their loyalty and trust. Ensuring that they become a part of the Distinct Designs family knowing they will be well taken care of.</p></article>
-  </div>
-</section>
-<section class="section section--tinted" id="team">
-  <div class="section__header"><h2>Our experts</h2><p>The team</p></div>
-  <div class="team-grid">
-    <article class="team-card"><img src="{p}images/site/Nick-DD.jpg" alt="Nicholas Aguilar, owner of Distinct Designs" width="600" height="700" loading="lazy"><h3>Nicholas</h3><p>Owner</p></article>
-    <article class="team-card"><img src="{p}images/site/eric-pancho-2-2.jpg" alt="Eric, custom cabinet and door specialist" width="600" height="700" loading="lazy"><h3>Eric</h3><p>Cabinet and door specialist</p></article>
-    <article class="team-card"><img src="{p}images/site/jerry-spider-1.jpg" alt="Jerry, in-house demo and plumbing specialist" width="600" height="700" loading="lazy"><h3>Jerry</h3><p>In-house demo and plumbing specialist</p></article>
-    <article class="team-card"><img src="{p}images/site/pops32.jpg" alt="Joel, tile and stone designer and installer" width="600" height="700" loading="lazy"><h3>Joel</h3><p>Tile and stone designer and installer</p></article>
-    <article class="team-card"><img src="{p}images/site/randy-hoher-drywall-and-paint-specialist-02.jpg" alt="Randy, drywall and paint specialist" width="600" height="700" loading="lazy"><h3>Randy</h3><p>Drywall and paint specialist</p></article>
-    <article class="team-card"><img src="{p}images/site/fredo.jpg" alt="Fredo, general lead tile and stone installer" width="600" height="700" loading="lazy"><h3>Fredo</h3><p>General lead tile and stone installer</p></article>
-    <article class="team-card"><img src="{p}images/site/Travis-Vanzee.jpg" alt="Travis Vanzee, electrician" width="600" height="700" loading="lazy"><h3>Travis</h3><p>Electrician specialist</p></article>
-  </div>
-</section>
-<section class="section">
-  <h2>We follow best practices</h2>
-  <p class="page-intro">We provide excellent service and quality workmanship for all projects, ensuring that every stage of your custom home build or remodeling construction project is done with detail.</p>
-  <div class="stat-row" style="margin-top:1.5rem">
-    <article class="stat-card"><span>Custom designs</span></article>
-    <article class="stat-card"><span>Top quality</span></article>
-    <article class="stat-card"><span>Projects done on time</span></article>
-  </div>
-  {R(slug, [("Our services", "services"), ("Our projects", "projects"), ("Contact", "contact")])}
-</section>
-"""
-    # TODO: source about page repeated Randy and Fredo. Listed once each.
-    # TODO: pops32.jpg alt text on the source site said "General Lead Tile and Stone Installer"; the heading beside it is Joel.
-    W(slug, S(slug,
-              "About Distinct Designs Construction | Joshua Tree Custom Home Builder",
-              "Meet Nicholas Aguilar and the Distinct Designs team, a Joshua Tree luxury custom home builder shaped by Mario Trujillo's standards. Serving the High Desert and Coachella Valley.",
-              body))
-
-
-def services():
-    slug = "services"
-    p = g.prefix(slug)
-    body = f"""
-<header class="hero hero--page">
-  <img class="hero__image" src="{p}images/site/Custom-Desert-Home.webp" alt="Photograph of the Cubero custom home by Distinct Designs Construction" width="1536" height="1024">
-  <div class="hero__scrim" aria-hidden="true"></div>
-  <div class="hero__content reveal">
-    <p class="eyebrow">Distinct Designs · High Desert &amp; Coachella Valley</p>
-    <h1>New custom luxury home build and residential remodeling experts</h1>
-  </div>
-</header>
-<section class="section">
-  <h2>Luxury custom homes and high-end remodels, built without compromise</h2>
-  <p class="page-intro">We are a fully integrated design-build firm specializing in luxury custom home construction and high-end remodeling across the High Desert and Coachella Valley. One team. One standard. Every detail, every finish, every system, designed around your vision and built to last in the desert.</p>
-  <p class="page-intro">Joshua Tree · Yucca Valley · Twentynine Palms · Pioneer Town · Landers · Morongo Valley · Desert Hot Springs · Palm Springs · Palm Desert · Cathedral City · Indian Wells · Rancho Mirage · Greater Southern California</p>
-  <div class="service-grid" style="margin-top:2rem">
-    <a class="service-card" href="{HREF(slug, "services/custom-home-build")}"><h3>Custom home build</h3><p>Ground-up luxury homes in Joshua Tree, Palm Springs, and the High Desert.</p><span class="service-card__more">Service page</span></a>
-    <a class="service-card" href="{HREF(slug, "services/whole-home-remodel")}"><h3>Whole-home remodel</h3><p>Kitchens, bathrooms, and full-home transformations.</p><span class="service-card__more">Service page</span></a>
-    <a class="service-card" href="{HREF(slug, "services/custom-adu")}"><h3>Custom ADU and guest suite</h3><p>Built to the same standard as our $870K+ homes.</p><span class="service-card__more">Service page</span></a>
-    <a class="service-card" href="{HREF(slug, "services/remodels")}"><h3>Remodels</h3><p>Designer kitchen renovations and remodels, and luxury bathroom renovations, remodels and additions.</p><span class="service-card__more">Service page</span></a>
-  </div>
-</section>
-<section class="section section--tinted">
-  <blockquote class="prose"><p>"Most builders hand you a contract and disappear. We stay at your side from the first sketch to the moment you walk through the finished door, and we're proud of every inch of what's behind it."</p></blockquote>
-  <h2>What makes us different</h2>
-  <p class="page-intro">We're not a general contractor who dabbles in high-end work. Distinct Designs was built from the ground up for luxury clients, people who know what they want and expect a builder who can actually deliver it.</p>
-  <div class="card-grid" style="margin-top:1.5rem">
-    <article class="info-card"><h3>Fully integrated design-build</h3><p>Architecture, engineering, permitting, and construction under one roof. One team, one contract, one point of accountability.</p></article>
-    <article class="info-card"><h3>Engineered for desert living</h3><p>Materials, systems, and structural methods built for extreme heat, UV, and wind, not repurposed coastal California specs.</p></article>
-    <article class="info-card"><h3>Transparent pricing, no surprises</h3><p>Detailed scopes, honest timelines, and real conversations about budget before work begins.</p></article>
-    <article class="info-card"><h3>Obsessed with the details</h3><p>The tile work, the cabinetry, the transitions: this is where most builders cut corners. It's where we set our standard.</p></article>
-  </div>
-</section>
-<section class="section" id="new-construction">
-  <p class="eyebrow">New construction</p>
-  <h2>Luxury custom home building in the High Desert and Coachella Valley</h2>
-  <div class="prose">
-    <p>From raw desert land to a fully finished, move-in-ready custom home, we manage every phase of design and construction so the result reflects exactly how you want to live. No developer floor plans. No compromises on materials. No gaps between the team who designed it and the team who builds it.</p>
-    <p>We build luxury custom homes in Palm Springs, Joshua Tree, Rancho Mirage, Indian Wells, Yucca Valley, Twentynine Palms, and throughout the greater High Desert.</p>
-    <p><a href="{HREF(slug, "services/custom-home-build")}">Read the custom home builder page</a></p>
-  </div>
-  <div class="card-grid" style="margin-top:1.5rem">
-    <article class="info-card"><h3>Design and pre-construction</h3><ul class="check-list"><li>Site evaluation and lot consultation</li><li>Custom architecture and design</li><li>Structural engineering</li><li>Permitting and submittal administration</li></ul></article>
-    <article class="info-card"><h3>Construction and systems</h3><ul class="check-list"><li>Grading, underground and foundation</li><li>Structural framing</li><li>Full MEP: plumbing, electrical, HVAC</li><li>Panel upgrades and rewires</li></ul></article>
-    <article class="info-card"><h3>Interior and finishes</h3><ul class="check-list"><li>Luxury flooring: tile, stone, polished concrete</li><li>Custom cabinetry and built-ins</li><li>Designer kitchens and bathrooms</li><li>Drywall, insulation and painting</li></ul></article>
-    <article class="info-card"><h3>Outdoor and exterior</h3><ul class="check-list"><li>Indoor-outdoor living design</li><li>Masonry, concrete and hardscape</li><li>Landscaping and shade structures</li><li>Stone facades and exterior finishes</li></ul></article>
-  </div>
-</section>
-<section class="section section--tinted">
-  <p class="eyebrow">Signature inclusions, every new build</p>
-  <h2>The finishes and technology that define a Distinct Designs home</h2>
-  <p class="page-intro">These aren't optional upgrades or line items you negotiate for. Artisan-level finishes and fully integrated technology are how we build, because anything less wouldn't carry our name.</p>
-  <div class="two-col" style="margin-top:1.5rem">
-    <article class="info-card"><h3>Custom surfaces and artisan stonework</h3><ul class="check-list"><li>Large-format tile, precision-set</li><li>Natural stone surfaces, counters and facades</li><li>Designer backsplashes and accent walls</li><li>Custom cabinetry and built-in millwork</li><li>Statement shower systems and soaking rooms</li><li>Stone patios and hardscape</li></ul></article>
-    <article class="info-card"><h3>Integrated technology and private cinema</h3><ul class="check-list"><li>Dedicated home theater design and build</li><li>Whole-home AV and immersive audio</li><li>Smart lighting, climate and automation</li><li>Structured wiring and network infrastructure</li><li>Hidden AV integration</li><li>Motorized shading, security and access</li></ul></article>
-  </div>
-</section>
-<section class="section" id="remodeling">
-  <p class="eyebrow">Remodeling</p>
-  <h2>High-end whole-home remodels and luxury renovations</h2>
-  <p class="page-intro">You already have the property. Now make it the home you always intended. Whether it's a complete structural transformation or a targeted renovation of the spaces that matter most, we bring the same design precision and craftsmanship to remodeling that we bring to a ground-up build.</p>
-  <p><a href="{HREF(slug, "services/whole-home-remodel")}">Read the whole-home remodel page</a></p>
-  <div class="card-grid" style="margin-top:1.5rem">
-    <article class="info-card"><h3>Whole-home renovation</h3><ul class="check-list"><li>Full gut renovations and structural changes</li><li>Floor plan reconfiguration</li><li>Sunken living spaces and custom millwork</li><li>Indoor-outdoor living transformations</li></ul></article>
-    <article class="info-card"><h3>Kitchens and bathrooms</h3><ul class="check-list"><li>Luxury kitchen redesigns and custom layouts</li><li>Spa-style bathrooms and steam rooms</li><li>Designer shower systems and soaking tubs</li><li>Custom vanities and bespoke storage</li></ul></article>
-    <article class="info-card"><h3>Systems and infrastructure</h3><ul class="check-list"><li>Full rewires and panel upgrades</li><li>Plumbing relocation and upgrades</li><li>Insulation and energy performance</li><li>Drywall, texture and painting</li></ul></article>
-    <article class="info-card"><h3>Finishes and detail</h3><ul class="check-list"><li>Luxury tile, stone and hardwood flooring</li><li>Custom cabinetry and built-in storage</li><li>Backsplashes, accent walls and feature tile</li><li>Stone patios, hardscape and facades</li></ul></article>
-  </div>
-</section>
-<section class="section section--tinted">
-  <p class="eyebrow">Signature inclusions, every remodel</p>
-  <h2>Remodeling is your opportunity to build it right this time</h2>
-  <div class="two-col" style="margin-top:1.5rem">
-    <article class="info-card"><h3>Artisan surfaces and premium stonework</h3><ul class="check-list"><li>Luxury tile and natural stone installation</li><li>Custom cabinetry and built-in millwork</li><li>Stone facades, feature walls and hardscape</li><li>Polished concrete and premium flooring</li></ul></article>
-    <article class="info-card"><h3>Technology integration and home cinema</h3><ul class="check-list"><li>Dedicated screening room design and build</li><li>Whole-home AV and smart home retrofit</li><li>Structured wiring built into the renovation</li></ul></article>
-  </div>
-</section>
-<section class="section">
-  <h2>Built for the desert, not just in it.</h2>
-  <div class="prose">
-    <p>Building luxury homes in the Coachella Valley and High Desert requires more than standard California construction knowledge. Temperature extremes, intense UV, seismic considerations, and wind load all demand materials and methods that most builders never think about. We've spent years developing a construction methodology specific to this region, specifying products that perform at 115°F, designing thermal envelopes that reduce energy loads without sacrificing design, and building structures that hold up over decades of desert conditions. The result isn't just a beautiful home. It's a home that works as hard as it looks.</p>
-  </div>
-</section>
-<section class="section section--tinted" id="adu">
-  <h2>Custom ADU and guest suite construction</h2>
-  <p class="page-intro">Custom ADU construction is part of what Distinct Designs builds across the High Desert, to the same standard as our luxury homes. Architecture and engineering coordination is included on design-build projects.</p>
-  {R(slug, [("Custom ADU page", "services/custom-adu"), ("Custom homes", "services/custom-home-build"), ("Whole-home remodels", "services/whole-home-remodel"), ("Contact", "contact")])}
-</section>
-<section class="section" id="remodels">
-  <p class="eyebrow">Remodels</p>
-  <h2>Kitchens, bathrooms, and additions</h2>
-  <p class="page-intro">Designer kitchen renovations and remodels, and luxury bathroom renovations, remodels and additions. This is the smaller scope. A whole-home remodel is its own service.</p>
-  <p><a href="{HREF(slug, "services/remodels")}">Read the remodels page</a></p>
-</section>
-<section class="lead-section">
-  <div class="lead-section__media"><img src="{p}images/process-break-terrace.webp" alt="Desert terrace at dusk with a fire bowl, string lights and a spa" width="1920" height="1081" loading="lazy"></div>
-  <div class="lead-section__content">
-    <h2>Begin your project.</h2>
-    <p>Every Distinct Designs project starts with a private consultation: a direct conversation about your vision, your site, and what it actually takes to build it right. No sales pitch. No pressure. We take on a limited number of projects each year to ensure every client receives our full attention.</p>
-    <a class="btn btn--primary" href="{HREF(slug, "contact")}">Start your journey today</a>
-  </div>
-</section>
-"""
-    W(slug, S(slug,
-              "Custom Home Building & Remodeling Services | Distinct Designs Construction",
-              "Luxury custom homes, whole-home remodels, designer kitchens and bathrooms, and custom ADUs across Joshua Tree, Palm Springs, and the Coachella Valley.",
-              body))
 
 
 def service_build():
@@ -346,14 +242,15 @@ def service_build():
     p = g.prefix(slug)
     body = H(
         slug, "images/site/Custom-Desert-Home.webp",
-        "Photograph of the Cubero custom home by Distinct Designs Construction",
+        "Cubero, a ground-up custom home by Distinct Designs Construction, seen from above",
         1536, 1024, "",
-        "Licensed CA General Contractor #1145786 · High Desert &amp; Coachella Valley",
-        "Custom home builder in Joshua Tree and the Coachella Valley",
-        "Ground-up custom homes from $870K to $5M+. One dedicated crew from groundbreaking to move-in, a budget you can trust before you sign, and daily progress you can see, even if you live out of state.",
-        HREF(slug, "contact"), "Schedule a Consultation", page=True,
+        LIC,
+        "Luxury Custom Homes",
+        "Ground-up custom homes from $1M to $5M+. One team from design to keys, a plan and price you can trust before you sign, and daily progress you can see, even from out of state.",
+        HREF(slug, JOURNEY), JL, page=True,
     )
     body += f"""
+<!-- Step 5: headline is "Luxury Custom Homes"; the town keywords live in the page title (Step 14). Revisit if SEO needs a town in the H1. -->
 <section class="section">
   <h2>Two homes, same size, very different price tags</h2>
   <div class="prose">
@@ -364,8 +261,8 @@ def service_build():
 </section>
 <section class="section section--split section--tinted" id="process">
   <div>
-    <h2>Your budget, locked in before we break ground</h2>
-    <p>Every material selection, design detail, and architectural decision is priced and matched to your budget upfront, before construction begins. No mid-build surprises. No forced compromises. No uncomfortable conversations about costs that should have been addressed on day one.</p>
+    <h2>Planned and priced before groundbreaking</h2>
+    <p>Every material, design detail, and architectural decision is priced against your budget before construction begins. The decisions that move cost get made on paper, not on the job site.</p>
     <h3 class="section--split__subhead">How it works</h3>
     {STEPS(g.PROCESS)}
     <p class="pull-line">You'll always know where your project stands, what it costs, and why, even if you're managing it from out of state.</p>
@@ -378,40 +275,31 @@ def service_build():
 <section class="section" id="projects">
   <div class="section__header">
     <h2>Signature homes we've built</h2>
-    <p>Homes and remodels in the High Desert, including Joshua Tree, Yucca Valley, and the Coachella Valley. <a href="{HREF(slug, "services")}#new-construction">See the full new-build scope</a>.</p>
+    <p>Two ground-up custom homes, and what pre-construction caught on each.</p>
   </div>
-  {P(slug)}
+  {P(slug, ["cubero", "alturas"])}
 </section>
 <section class="section section--tinted" id="why-us">
   <h2>Why serious buyers choose Distinct Designs</h2>
   {WHY(g.WHY_BUILD)}
 </section>
-<section class="section" id="testimonials">
-  <h2>What our clients say</h2>
-  {Q(g.HOME_QUOTES)}
-</section>
+<!-- TODO(v2): swap in custom-home reviews as they come in (Step 12). Homepage reviews used for now. -->
+{REVIEWS(g.HOME_QUOTES, tinted=False)}
 <section class="section section--tinted" id="faq">
   <h2>Custom home questions</h2>
+  {g.TIMELINE_TODO}
   {FAQ("build", g.BUILD_FAQ)}
 </section>
 <section class="section" id="areas-served">
   <h2>Where we build custom homes</h2>
-  <p class="page-intro">Joshua Tree, Yucca Valley, Palm Springs, Palm Desert, and the rest of the High Desert and Coachella Valley.</p>
-  {A(slug)}
-  {R(slug, [("Whole-home remodels", "services/whole-home-remodel"), ("Custom ADUs", "services/custom-adu"), ("All services", "services"), ("Contact", "contact")])}
+  {TOWNS(slug)}
+  <p class="page-intro" style="margin-top:1.5rem">Adding a guest house to a property you already own? See <a href="{HREF(slug, "services/custom-adu")}">Guest Houses &amp; ADUs</a>.</p>
 </section>
-<section class="lead-section" id="form">
-  <div class="lead-section__media lead-section__media--book">{book(slug)}</div>
-  <div class="lead-section__content">
-    <h2>Start your custom home journey</h2>
-    <p>Building at this level is about trust, not the lowest bid. Talk to Nick directly about your project. No call center, no sales script. Call <a href="tel:{TEL}">{PHONE}</a>.</p>
-    {F(GUIDE, "Request the custom home planning guide")}
-  </div>
-</section>
+{journey_cta(slug, "Start your custom home journey", f"Building at this level is about trust, not the lowest bid. Talk to Nick directly about your project. No call center, no sales script.", guide=True)}
 """
     W(slug, S(slug,
-              "Custom Home Builder in Joshua Tree & the High Desert | Distinct Designs",
-              "Ground-up custom homes from $870K to $5M+ in Joshua Tree, Yucca Valley, Palm Springs, and the Coachella Valley. One crew, a budget matched before you sign.",
+              "Luxury Custom Home Builder · Coachella Valley &amp; High Desert · Distinct Designs",
+              "Ground-up luxury custom homes from $1M to $5M+ across the Coachella Valley and High Desert. One team from design to keys, planned and priced before groundbreaking.",
               body, LD(g.BUILD_FAQ)))
 
 
@@ -419,14 +307,14 @@ def service_remodel():
     slug = "services/whole-home-remodel"
     p = g.prefix(slug)
     body = H(
-        slug, "images/hero-remodel.webp",
-        "Finished open-plan living room and kitchen with a stone feature wall, oak floors and sliding doors onto the desert",
-        1920, 960,
-        f"{p}images/hero-remodel-1200.webp 1200w, {p}images/hero-remodel.webp 1920w",
-        "Licensed CA General Contractor #1145786 · High-End Renovations, High Desert &amp; Coachella Valley",
-        "Luxury whole-home remodels in the High Desert and Coachella Valley",
-        "Designer kitchens, spa-level bathrooms, and full-home transformations, built by one dedicated crew, priced as one number, with daily photo updates you can see from anywhere.",
-        HREF(slug, "contact"), "Schedule a Consultation", page=True,
+        slug, "images/process-break-bath.webp",
+        "Finished spa-level bathroom with a freestanding soaking tub, white tile and desert views",
+        1920, 960, "",
+        LIC,
+        "Luxury Whole-Home Remodels",
+        "Whole-home remodels from $250K, planned and priced as one project, built by one crew, with photo updates you can see from anywhere.",
+        HREF(slug, JOURNEY), JL, page=True,
+        placeholder="Luxury Remodels hero: a finished high-end remodel interior (replaces the kitchen with the mini-split).",
     )
     body += f"""
 <section class="section">
@@ -439,59 +327,46 @@ def service_remodel():
 </section>
 <section class="section section--split section--tinted" id="process">
   <div>
-    <h2>Your number is locked in before demo day</h2>
-    <p>Before a single wall comes down, we run a full design-to-budget matching process: every material, every design detail, every structural unknown we can reasonably anticipate, priced and aligned with your budget in advance.</p>
+    <h2>Every decision priced before the first wall comes down</h2>
+    <p>Before a single wall comes down, we run a full design-to-budget process: every material, every design detail, and every structural question we can reasonably anticipate, priced against your budget in advance.</p>
     <h3 class="section--split__subhead">How it works</h3>
     {STEPS(g.PROCESS_REMODEL)}
     <p class="pull-line">You always know what's happening, what it costs, and why, even managing it from out of state.</p>
   </div>
   <div class="section--split__media reveal">
-    <img src="{p}images/process-crew-remodel.webp" alt="The Distinct Designs crew standing in front of a completed custom desert home under a clear blue sky" width="1200" height="1600" loading="lazy">
+    <img src="{p}images/process-crew-remodel.webp" alt="The Distinct Designs crew standing in front of a completed desert home under a clear blue sky" width="1200" height="1600" loading="lazy">
   </div>
 </section>
-<figure class="image-break"><img src="{p}images/process-break-bath.webp" alt="Spa-level bathroom remodel with a freestanding soaking tub, subway tile, penny-round floor and desert views" width="1920" height="960" loading="lazy"></figure>
-<section class="section" id="kitchens">
-  <h2>Designer kitchens and spa bathrooms in Yucca Valley, Joshua Tree, and Palm Springs</h2>
-  <p class="page-intro">Whole-home work and the rooms people feel every day. The same crew prices kitchens, baths, and the rest of the house as one project.</p>
-  <div class="two-col" style="margin-top:1.5rem">
-    <article class="info-card"><h3>Kitchens</h3><ul class="check-list"><li>Luxury kitchen redesigns and custom layouts</li><li>Custom cabinetry and built-in storage</li><li>Designer backsplashes and feature tile</li></ul></article>
-    <article class="info-card"><h3>Bathrooms</h3><ul class="check-list"><li>Spa-style bathrooms and steam rooms</li><li>Designer shower systems and soaking tubs</li><li>Custom vanities and bespoke storage</li></ul></article>
+<figure class="image-break"><img src="{p}images/process-break-terrace.webp" alt="Desert terrace at dusk with a fire bowl, string lights and a spa, valley lights beyond" width="1920" height="1081" loading="lazy"></figure>
+<section class="section" id="scope">
+  <h2>What a whole-home remodel covers</h2>
+  <div class="prose">
+    <p>The whole house, planned as one project: layout, structure, electrical and plumbing systems, finishes, kitchens, and primary suites. Every room is designed together, so the house reads as one home when we're done.</p>
+    <p>We also take on a limited number of kitchen and primary-bath remodels each year when the scope and finish level are the right fit.</p>
   </div>
-  <p style="margin-top:1.25rem"><a href="{HREF(slug, "services")}#remodeling">See the full remodel scope</a> or <a href="{HREF(slug, "services/remodels")}">kitchen, bathroom, and addition remodels</a>.</p>
 </section>
 <section class="section section--tinted" id="projects">
   <div class="section__header"><h2>Signature remodels we've delivered</h2></div>
-  {P(slug)}
+  {P(slug, ["la-mirada"], placeholders={"la-mirada": "La Mirada tile: reshoot pending (Step 13)."})}
 </section>
 <section class="section" id="why-us">
   <h2>Why serious homeowners choose Distinct Designs</h2>
   {WHY(g.WHY_REMODEL)}
 </section>
-<section class="section section--tinted" id="testimonials">
-  <h2>What our clients say</h2>
-  {Q(g.HOME_QUOTES)}
-</section>
+{REVIEWS([g.Q_VICTORIA])}
 <section class="section" id="faq">
   <h2>Remodel questions</h2>
   {FAQ("remodel", g.REMODEL_FAQ)}
 </section>
 <section class="section section--tinted" id="areas-served">
-  <h2>Remodeling across the High Desert and Coachella Valley</h2>
-  {A(slug)}
-  {R(slug, [("Custom homes", "services/custom-home-build"), ("Custom ADUs", "services/custom-adu"), ("All services", "services"), ("Contact", "contact")])}
+  <h2>Where we remodel</h2>
+  {TOWNS(slug)}
 </section>
-<section class="lead-section" id="form">
-  <div class="lead-section__media lead-section__media--book">{book(slug)}</div>
-  <div class="lead-section__content">
-    <h2>Start your remodel the right way</h2>
-    <p>A remodel at this level is about trust, not the lowest bid. Talk to Nick directly about your project. Call <a href="tel:{TEL}">{PHONE}</a>.</p>
-    {F(GUIDE, "Request the remodel planning guide")}
-  </div>
-</section>
+{journey_cta(slug, "Start your remodel the right way", "A remodel at this level is about trust, not the lowest bid. Talk to Nick directly about your project.", guide=True)}
 """
     W(slug, S(slug,
-              "Whole-Home Remodeling in Yucca Valley & Palm Springs | Distinct Designs",
-              "Designer kitchens, spa bathrooms, and whole-home remodels in Yucca Valley, Joshua Tree, Palm Springs, and the Coachella Valley. One crew and one price before demo day.",
+              "Luxury Whole-Home Remodels · General Contractor · Distinct Designs",
+              "Luxury whole-home remodels from $250K across the Coachella Valley and High Desert, planned and priced as one project and built by one in-house crew.",
               body, LD(g.REMODEL_FAQ)))
 
 
@@ -499,28 +374,27 @@ def service_adu():
     slug = "services/custom-adu"
     p = g.prefix(slug)
     body = H(
-        slug, "images/hero-garage.webp",
-        "Finished custom garage with polished concrete floors and two Porsche 911 sports cars, desert landscape through the window",
-        1672, 1115,
-        f"{p}images/hero-garage-1200.webp 1200w, {p}images/hero-garage.webp 1672w",
-        "Licensed CA General Contractor #1145786 · Custom ADUs &amp; Guest Suites",
-        "Custom ADU and guest suite builder in the High Desert",
-        "Add real, lasting value to your property with a fully custom ADU or guest suite, designed and built to the same standard as our $870K+ luxury homes, with one crew and one clear price.",
-        HREF(slug, "contact"), "Schedule a Consultation", page=True,
+        slug, "images/project-cubero.webp",
+        "Cubero, a ground-up custom home built by the same Distinct Designs team that builds guest houses and ADUs",
+        900, 675, "",
+        LIC,
+        "Custom Guest Houses &amp; ADUs",
+        "For properties that already have a home. A guest house or ADU built to the standard of the house beside it, by one crew, planned and priced before we start.",
+        HREF(slug, JOURNEY), JL, page=True,
+        placeholder="Guest Houses &amp; ADUs hero: a guest house or ADU we built (Cubero stands in; the garage photo stays off until confirmed).",
     )
     body += f"""
 <section class="section">
-  <h2>A well-built ADU adds value. A poorly planned one adds problems.</h2>
+  <h2>A guest house should look like it was always there.</h2>
   <div class="prose">
-    <p>An ADU sounds simple until permitting, utility hookups, and design decisions start piling up, and a project that should add value to your property turns into a budget and paperwork headache instead.</p>
-    <p>The difference between an ADU that pays for itself and one that becomes a regret comes down to planning most builders skip.</p>
-    <p>Our <a href="{HREF(slug, "planning-guide")}">free planning guide</a> shows you what to get right before you break ground on a Joshua Tree, Yucca Valley, or Palm Springs lot.</p>
+    <p>The difference between a guest house that belongs on the property and one that looks added on is planning: siting, utilities, permits, and matching the main home's materials. That's the part most builders skip.</p>
+    <p>Our <a href="{HREF(slug, "planning-guide")}">free planning guide</a> shows you what to get right before you break ground.</p>
   </div>
 </section>
 <section class="section section--split section--tinted" id="process">
   <div>
-    <h2>Your ADU budget, matched before we start</h2>
-    <p>Before construction begins, we match your design to your budget in full, materials, finishes, and utility work included, so there are no mid-build surprises on a smaller project that deserves the same discipline as a full custom home.</p>
+    <h2>Planned and priced before we start</h2>
+    <p>Before construction begins, every material, finish, and utility connection is priced against your budget, with the same discipline we bring to a full custom home. Built to the same standard as our custom homes.</p>
     <h3 class="section--split__subhead">How it works</h3>
     {STEPS(g.PROCESS_ADU)}
   </div>
@@ -528,88 +402,66 @@ def service_adu():
     <img src="{p}images/process-crew-adu.webp" alt="The Distinct Designs crew together inside a finished build, Joshua trees and desert mountains through the open sliders" width="1200" height="1600" loading="lazy">
   </div>
 </section>
-<figure class="image-break"><img src="{p}images/process-break-patio.webp" alt="Desert backyard patio at sunset with a hot tub, string lights, lounge seating and a Joshua Tree, CA sign" width="1920" height="1440" loading="lazy"></figure>
 <section class="section" id="projects">
   <div class="section__header">
     <h2>Recent custom builds</h2>
-    <p>The same in-house team that builds custom homes in the Coachella Valley and High Desert builds the ADU.</p>
+    <p>Built by the same team.</p>
   </div>
-  {P(slug)}
+  <!-- TODO(v2): show real guest house or ADU work when available. Cubero stands in, "Built by the same team" (Step 5). -->
+  {P(slug, ["cubero"], {"cubero": ("Cubero", "Built by the same team")}, placeholders={"cubero": "ADU section: real guest house or ADU work when available."})}
 </section>
 <section class="section section--tinted" id="why-us">
-  <h2>Why homeowners trust us with their ADU</h2>
+  <h2>Why homeowners trust us with their guest house</h2>
   {WHY(g.WHY_ADU)}
 </section>
-<section class="section">
-  <h2>What our clients say</h2>
-  {Q(g.HOME_QUOTES[:3])}
-</section>
+<!-- TODO(v2): swap in a guest house or ADU review when one comes in. -->
+{REVIEWS([g.Q_MYERS], tinted=False)}
 <section class="section section--tinted" id="faq">
-  <h2>ADU questions</h2>
+  <h2>Guest house and ADU questions</h2>
   {FAQ("adu", g.ADU_FAQ)}
 </section>
 <section class="section" id="areas-served">
-  <h2>ADUs across Joshua Tree, Palm Springs, and the valley</h2>
-  {A(slug)}
-  {R(slug, [("Custom homes", "services/custom-home-build"), ("Whole-home remodels", "services/whole-home-remodel"), ("All services", "services"), ("Contact", "contact")])}
+  <h2>Where we build guest houses and ADUs</h2>
+  {TOWNS(slug)}
 </section>
-<section class="lead-section" id="form">
-  <div class="lead-section__media lead-section__media--book">{book(slug)}</div>
-  <div class="lead-section__content">
-    <h2>Add value to your property the right way</h2>
-    <p>Talk to Nick directly about your ADU or guest suite. Call <a href="tel:{TEL}">{PHONE}</a>.</p>
-    {F(GUIDE, "Request the ADU planning guide")}
-  </div>
-</section>
+{journey_cta(slug, "Plan your guest house the right way", "Talk to Nick directly about a guest house or ADU for the home you already love.", guide=True)}
 """
     W(slug, S(slug,
-              "Custom ADU & Guest Suite Builder in Joshua Tree | Distinct Designs",
-              "Custom ADUs and guest suites in Joshua Tree, Yucca Valley, Palm Springs, and the Coachella Valley, built to the same standard as our $870K+ homes, with permits handled.",
+              "Custom Guest Houses &amp; ADUs · Distinct Designs",
+              "Custom guest houses and ADUs for properties that already have a home, built to the standard of the house beside it, planned and priced before we start.",
               body, LD(g.ADU_FAQ)))
 
 
-def projects():
-    slug = "projects"
+def our_process():
+    slug = "our-process"
     p = g.prefix(slug)
-    cats = [
-        ("General construction", "images/site/outdoor-decks-2-1.jpg", "Outdoor deck and general construction work by Distinct Designs"),
-        ("Home remodels", "images/site/Distinct-Designs-General-Remodel.jpg", "Home remodel by Distinct Designs Construction"),
-        ("Kitchen remodels", "images/site/Distinct-Designs-contact-us-background.jpg", "Kitchen remodel by Distinct Designs Construction"),
-        ("Tile and stone masonry", "images/site/img_20140707_090216.jpg", "Tile and stone masonry by Distinct Designs Construction"),
-    ]
-    cards = []
-    for name, img, alt in cats:
-        cards.append(f"""<article class="project-tile project-tile--link" id="{name.split()[0].lower()}">
-  <img src="{p}{img}" alt="{alt}" loading="lazy">
-  <span class="project-tile__label">{name}</span>
-</article>""")
-    body = f"""
-<header class="hero hero--page">
-  <img class="hero__image" src="{p}images/site/outdoor-decks-2-1.jpg" alt="Outdoor deck built by Distinct Designs Construction" width="1600" height="1000">
-  <div class="hero__scrim" aria-hidden="true"></div>
-  <div class="hero__content reveal">
-    <p class="eyebrow">Portfolio</p>
-    <h1>Projects</h1>
-    <p class="subhead">Signature builds and remodels across the High Desert.</p>
-  </div>
-</header>
+    body = PH(slug, "images/site/dsc01975.jpg",
+              "Alturas custom home under construction: framed and sheathed walls with arched openings under a clear desert sky",
+              800, 533,
+              LIC, "Our Process",
+              "One team from first conversation to keys. Most of what protects your budget happens before the first shovel.")
+    body += f"""
 <section class="section">
-  <h2>Signature builds and remodels</h2>
-  {P(slug)}
-  <p style="margin-top:1.5rem"><a href="{HREF(slug, "projects/sun-mesa")}">Sun Mesa remodel</a></p>
+  <div class="section__header">
+    <h2>What Start Your Journey leads to</h2>
+    <p>Six steps, the same on every project. The Design &amp; Pre-Construction Agreement is where the budget is protected.</p>
+  </div>
+  {STEPS(g.PROCESS)}
 </section>
-<section class="section section--tinted" id="galleries">
-  <h2>More of the work</h2>
-  <p class="page-intro">These categories are published on the current projects page. The old links to standalone gallery pages do not resolve, so the photographs stay here.</p>
-  <div class="projects-grid" style="margin-top:1.5rem">{"".join(cards)}</div>
+<section class="section section--tinted">
+  <h2>How the work is done</h2>
+  {WHY(g.WHY_BUILD)}
+</section>
+<section class="section">
+  <h2>Ready when you are</h2>
+  <p class="page-intro">Tell us about your project. Every inquiry is reviewed personally, and you'll hear back the same day.</p>
+  {R(slug, [("Portfolio", "projects"), (JL, JOURNEY)])}
 </section>
 """
     W(slug, S(slug,
-              "Projects | Distinct Designs Construction",
-              "Signature builds and remodels by Distinct Designs Construction: La Mirada, Hilltop, Cubero, Alturas, and Sun Mesa, plus kitchens, remodels, and stone work.",
+              "Our Process: Design to Keys | Distinct Designs Construction",
+              "How a Distinct Designs project runs: phone consultation, site visit, Design &amp; Pre-Construction Agreement, one-price proposal, build, and keys.",
               body))
-
-
 LA_MIRADA_IMGS = [
     ("img_8659.jpg", 1200, 900),
     ("img_8662.jpg", 1200, 900),
@@ -648,19 +500,41 @@ ALTURAS_IMGS = [
 ]
 
 
-def case_study(slug, title, meta, h2, kicker, headline, place, stat_label, stat, stage_label, stage, paragraphs, lesson, images, image_prefix, note=""):
+# TODO(v2): living-room.jpg (wood beams, desert view) is off the Cubero gallery
+# until Nick confirms it is a home we built (if it is a rendering, label it).
+# TODO(v2): Garage.jpg (the garage with the car) is off until Nick confirms we built it (Step 5).
+CUBERO_IMGS = [im for im in CUBERO_IMGS if im[0] not in ("living-room.jpg", "Garage.jpg")]
+
+
+def projects():
+    slug = "projects"
+    body = PH(slug, "images/site/Custom-Desert-Home.webp",
+              "Cubero, a ground-up custom home by Distinct Designs Construction, seen from above",
+              1536, 1024, "Portfolio", "Portfolio", "Signature builds and remodels.")
+    body += f"""
+<section class="section">
+  <h2>Signature builds and remodels</h2>
+  {P(slug, ["cubero", "alturas", "hilltop"])}
+  <!-- TODO(v2): add La Mirada back after the reshoot. Sun Mesa stays off until it has real photos (its page redirects here for now). -->
+</section>
+<section class="section section--tinted">
+  <h2>Start your project</h2>
+  <p class="page-intro">Every project here started with a conversation. Tell us about yours.</p>
+  {R(slug, [("Our Process", "our-process"), (JL, JOURNEY)])}
+</section>
+"""
+    W(slug, S(slug,
+              "Portfolio: Custom Homes &amp; Remodels | Distinct Designs",
+              "Signature builds and remodels by Distinct Designs Construction: the Cubero custom home, Alturas (now building), and the Hilltop rescue and completion.",
+              body))
+
+
+def case_study(slug, title, meta, h1, h2, kicker, headline, place, stat_label, stat, stage_label, stage, paragraphs, lesson, images, image_prefix, hero_img=None, placeholder="", gallery_note=""):
     p = g.prefix(slug)
     paras = "".join(f"<p>{t}</p>" for t in paragraphs)
-    body = f"""
-<header class="hero hero--page">
-  <img class="hero__image" src="{p}images/site/{images[0][0]}" alt="{image_prefix}, photograph 1" width="{images[0][1]}" height="{images[0][2]}">
-  <div class="hero__scrim" aria-hidden="true"></div>
-  <div class="hero__content reveal">
-    <p class="eyebrow">Recent work</p>
-    <h1>Recent work</h1>
-  </div>
-</header>
-{note}
+    himg = hero_img or (f"images/site/{images[0][0]}", images[0][1], images[0][2], f"{image_prefix}, photograph 1")
+    body = PH(slug, himg[0], himg[3], himg[1], himg[2], "Portfolio", h1, placeholder=placeholder)
+    body += f"""
 <section class="section">
   <p class="eyebrow">{kicker}</p>
   <h2>{headline}</h2>
@@ -673,8 +547,8 @@ def case_study(slug, title, meta, h2, kicker, headline, place, stat_label, stat,
 </section>
 <section class="section section--tinted">
   <h2>{h2}</h2>
-  {GAL(slug, images, image_prefix)}
-  {R(slug, [("All projects", "projects"), ("Custom homes", "services/custom-home-build"), ("Remodels", "services/whole-home-remodel"), ("Contact", "contact")])}
+  {GAL(slug, images, image_prefix, gallery_note)}
+  {R(slug, [("Portfolio", "projects"), ("Custom Homes", "services/custom-home-build"), ("Luxury Remodels", "services/whole-home-remodel"), (JL, JOURNEY)])}
 </section>
 """
     W(slug, S(slug, title, meta, body))
@@ -683,9 +557,10 @@ def case_study(slug, title, meta, h2, kicker, headline, place, stat_label, stat,
 def project_pages():
     case_study(
         "projects/la-mirada",
-        "La Mirada Remodel | Distinct Designs Construction",
+        "La Mirada Luxury Renovation | Distinct Designs Construction",
         "La Mirada luxury renovation by Distinct Designs Construction. A hidden cloth-wiring fire risk was replaced with a full rewire before the finishes went in.",
-        "La Mirada remodel",
+        "La Mirada – Luxury Renovation",
+        "La Mirada photographs",
         "Luxury renovation | Electrical safety",
         "The previous owner's electrical system was a fire waiting to happen. We caught it before it did.",
         "La Mirada project · Southern California",
@@ -696,16 +571,19 @@ def project_pages():
             "Unlike a modern breaker that trips when it is overloaded, cloth wiring deteriorates silently. The insulation degrades from the inside out through a process called thermal degradation, overheating repeatedly over years without triggering any warning. There is no alarm, no tripped breaker, no early sign until there is a fire.",
             "It is not a question of if. It is a question of when.",
             "We removed the system entirely and rewired the home to current code, protecting our clients' investment, their property, and most importantly, their family. The renovation they came to us for was delivered in full, with the peace of mind that comes from knowing the home beneath the finishes is as sound as everything visible in it.",
-            "We also encountered challenges with the project's material delivery timeline. A designer who was consistently behind on deadlines was creating downstream delays across the entire build schedule. After a direct conversation with our clients, we restructured the material procurement process around confirmed pickup dates rather than waiting on delivery promises. The project moved forward on schedule from that point forward.",
         ],
         "A renovation that looks exceptional but hides a compromised system is not a finished home. It is a liability waiting to surface. We don't just build beautiful spaces. We make sure everything behind the walls earns the same standard as what's in front of them.",
-        LA_MIRADA_IMGS, "La Mirada remodel",
+        LA_MIRADA_IMGS, "La Mirada renovation",
+        hero_img=("images/project-la-mirada.webp", 900, 1200, "La Mirada renovation: open-plan kitchen and living area with marble island, brass pendants and oak floors"),
+        placeholder="La Mirada hero: reshoot pending (current photos are phone shots).",
+        gallery_note="La Mirada gallery: replace the phone shots after the reshoot (Step 13).",
     )
     case_study(
         "projects/hilltop",
-        "Hilltop Build | Distinct Designs Construction",
+        "Hilltop Rescue and Completion | Distinct Designs",
         "Hilltop build in the High Desert. Distinct Designs replaced out-of-code electrical and underspanned structural framing after another contractor left with $70,000.",
-        "Hilltop build",
+        "Hilltop – Rescue and Completion",
+        "Hilltop photographs",
         "Rescue and completion | Structural and electrical",
         "Their contractor vanished with $70,000. We came in, made it safe, and finished it right.",
         "Hilltop build · High Desert, CA",
@@ -715,36 +593,41 @@ def project_pages():
             "These clients called us after their contractor had all but disappeared, showing up one week a month for two months while collecting payments in full. By the time they reached us, they had already lost $70,000 and had no idea what, if anything, had been done correctly.",
             "Our on-site assessment revealed two serious and interconnected problems. The first was the electrical: a significant portion of it had been installed out of compliance with code standards and had to be fully removed and rerun. The second was more alarming: the load-bearing framing and structural beams had been installed incorrectly relative to the engineering specifications. They were underspanned for the load they were meant to carry, a condition that, left unaddressed, creates real risk of roof failure over time.",
             "We remediated both issues completely, brought every system into full compliance, and delivered the finished home our clients had originally envisioned, but now built to the standard that actually keeps a family safe. The decision to stop and call us, rather than continue with a contractor who had already proven he couldn't be trusted, saved them from a far more costly outcome down the road.",
-            "This is one of the most common calls we receive: a client who hired on price, discovered too late that price was the only thing that was competitive, and is now paying twice to fix what should have been done right the first time. We never want to be your second call. But if you need one, we will not leave until it is right.",
+            "We never want to be your second call. But if you need one, we will not leave until it is right.",
         ],
         "A low bid doesn't protect your investment. It shifts the risk onto you. When a contractor disappears or cuts corners, the liability stays with the homeowner. The right builder is the one who isn't trying to win your project on price.",
         HILLTOP_IMGS, "Hilltop build",
+        hero_img=("images/site/hilltop-01-2.webp", 1440, 1080, "Hilltop terrace at dusk with a fire bowl, string lights and a spa, valley lights beyond"),
+        placeholder="Hilltop hero: confirm the strongest finished Hilltop photo (the kitchen with the mini-split is off the hero).",
     )
     case_study(
         "projects/cubero",
-        "Cubero Build | Distinct Designs Construction",
+        "Cubero Ground-Up Custom Home | Distinct Designs Construction",
         "Cubero ground-up custom home in the High Desert. Pre-construction site analysis avoided Joshua tree relocation, major regrading, and a $58,000 well.",
-        "Cubero build",
+        "Cubero – Ground-Up Custom Home",
+        "Cubero photographs",
         "Ground-up new build | Site analysis and planning",
         "They thought they needed a well. We found a better path and saved them $177,000.",
         "Cubero build · High Desert, CA",
-        "Total savings", "$177,000+",
+        "Net savings", "$177,000+",
         "Stage", "Pre-construction",
         [
             "These clients had already purchased their land and were ready to build. They came to us with a site plan, a vision, and the assumption that the heavy decisions had already been made. Within the first phase of our preconstruction process, we identified three costly assumptions that would have derailed the project, before a single permit had been filed.",
             "The planned building location required the relocation of protected Joshua trees, a process that would have cost over $90,000 alone, and necessitated regrading more than half of the five-acre parcel to accommodate the natural water channels running through the property. That regrading cost: over $150,000.",
             "Neither had been factored into the budget. Neither had been caught by anyone prior to our involvement. By conducting a comprehensive site analysis, we identified an alternate building location that offered superior views, eliminated the need for any tree relocation, and worked with the natural topography of the land rather than against it. The project moved forward on schedule and within budget, because the right questions were asked before the expensive decisions were locked in.",
             "We also resolved a utility challenge the clients had resigned themselves to: they believed a $58,000 well was their only option for water access. After analyzing the property and surrounding easement rights, we determined a water line connection was achievable for half that cost. No well required.",
+            "After the site work the new location did require, their net savings came to more than $177,000.",
         ],
         "What you don't know before you build will cost you. Our preconstruction process exists for one reason: to ensure that every dollar you commit is being spent on the right decision, in the right location, for the right reasons.",
         CUBERO_IMGS, "Cubero build",
     )
     case_study(
         "projects/alturas",
-        "Alturas Build | Distinct Designs Construction",
-        "Alturas custom home in the High Desert, currently in progress. A pre-construction review caught a setback error and a septic conflict before demolition-level cost.",
-        "Alturas build",
-        "New construction | Design phase oversight",
+        "Alturas Custom Home, Now Building | Distinct Designs",
+        "Alturas custom home in the High Desert, now building. A pre-construction review caught a setback error and a septic conflict before demolition-level cost.",
+        "Alturas – Ground-Up Custom Home",
+        "Alturas photographs",
+        "Now building | Design phase oversight",
         "We found a $200,000+ error before a single shovel hit the ground.",
         "Alturas build · High Desert, CA",
         "Losses prevented", "$200,000+",
@@ -757,70 +640,316 @@ def project_pages():
         ],
         "The most expensive contractor mistake doesn't happen on the job site. It happens before anyone shows up. The right eyes in the design phase protect hundreds of thousands of dollars that most clients don't even know are at risk.",
         ALTURAS_IMGS, "Alturas build",
+        hero_img=("images/site/Alturas-build.jpg", 800, 533, "Alturas custom home framed and sheathed against a blue desert sky"),
     )
-    # Sun Mesa is published with Hilltop's case-study copy and La Mirada's photos.
-    case_study(
-        "projects/sun-mesa",
-        "Sun Mesa Remodel | Distinct Designs Construction",
-        "Sun Mesa remodel page as published by Distinct Designs Construction.",
-        "Sun Mesa remodel",
-        "Rescue and completion | Structural and electrical",
-        "Their contractor vanished with $70,000. We came in, made it safe, and finished it right.",
-        "Hilltop build · High Desert, CA",
-        "Contractor fraud", "$70,000",
-        "Hazards remediated", "Structural + fire",
-        [
-            "These clients called us after their contractor had all but disappeared, showing up one week a month for two months while collecting payments in full. By the time they reached us, they had already lost $70,000 and had no idea what, if anything, had been done correctly.",
-            "Our on-site assessment revealed two serious and interconnected problems. The first was the electrical: a significant portion of it had been installed out of compliance with code standards and had to be fully removed and rerun. The second was more alarming: the load-bearing framing and structural beams had been installed incorrectly relative to the engineering specifications. They were underspanned for the load they were meant to carry, a condition that, left unaddressed, creates real risk of roof failure over time.",
-            "We remediated both issues completely, brought every system into full compliance, and delivered the finished home our clients had originally envisioned, but now built to the standard that actually keeps a family safe. The decision to stop and call us, rather than continue with a contractor who had already proven he couldn't be trusted, saved them from a far more costly outcome down the road.",
-            "This is one of the most common calls we receive: a client who hired on price, discovered too late that price was the only thing that was competitive, and is now paying twice to fix what should have been done right the first time. We never want to be your second call. But if you need one, we will not leave until it is right.",
-        ],
-        "A low bid doesn't protect your investment. It shifts the risk onto you. When a contractor disappears or cuts corners, the liability stays with the homeowner. The right builder is the one who isn't trying to win your project on price.",
-        LA_MIRADA_IMGS, "Sun Mesa remodel",
-        note="<!-- TODO: On distinctdesignsconstruction.com/sun-mesa/ the written case study matches the Hilltop page, including the label Hilltop build, and the gallery photos match La Mirada. Copied as published. Confirm the correct Sun Mesa story and photos before launch. -->",
-    )
+    # Sun Mesa: not generated in v2 (it duplicated Hilltop's copy with La Mirada's
+    # photos). /projects/sun-mesa/ redirects to /projects/ in vercel.json.
 
 
-def contact():
-    slug = "contact"
+def about():
+    slug = "about"
     p = g.prefix(slug)
-    areas = ", ".join(g.AREAS)
     body = f"""
-<header class="hero hero--page">
-  <img class="hero__image" src="{p}images/process-break-patio.webp" alt="Desert backyard patio at sunset with a hot tub, string lights, lounge seating and a Joshua Tree, CA sign" width="1920" height="1440">
+<header class="hero hero--page hero--team">
+  <img class="hero__image" src="{p}images/process-crew-home.webp" alt="The Distinct Designs crew inside a completed custom home, desert mountains beyond the open sliders" width="1200" height="900" fetchpriority="high" loading="eager">
   <div class="hero__scrim" aria-hidden="true"></div>
   <div class="hero__content reveal">
-    <p class="eyebrow">Joshua Tree, CA</p>
-    <h1>Contact our Joshua Tree construction professionals</h1>
+    <p class="eyebrow">About Distinct Designs</p>
+    <h1>Three generations. One standard.</h1>
+    <p class="subhead">18 years building in the desert. 100+ years of combined experience on our crew.</p>
   </div>
 </header>
+<section class="section">
+  <h2>Dedication to my grandfather, Mario Trujillo</h2>
+  <div class="portrait-row reveal" style="margin:1.5rem 0">
+    <img src="{p}images/site/Mario-Trulillo-old-school-2.jpg" alt="Mario Trujillo, earlier in his career" width="900" height="1100" loading="lazy">
+    <img src="{p}images/site/Mario-Trulillo.jpg" alt="Mario Trujillo" width="900" height="1100" loading="lazy">
+  </div>
+  <div class="prose">
+    <p>Mario Trujillo, a decorated war veteran and Master Gunnery Sergeant of the United States Marine Corps, laid the foundation upon which Distinct Designs Construction was built. He upheld principles of hard work, diligence, adaptability, and treating every employee like family. These standards continue to guide our company today.</p>
+    <p>Every one of us at Distinct Designs Construction has been shaped and influenced by Mr. Trujillo's leadership, whether through direct mentorship or through the guidance passed down from those he mentored. His values and craftsmanship became the blueprint that continues to branch throughout the company, instilling integrity, diligence, and a commitment to building quality from the ground up.</p>
+    <p>Mr. Trujillo taught us the importance of working hard, taking pride in our craft, going the extra mile, and never settling for anything less than excellence. But more than that, he built a culture rooted in loyalty, mutual respect, and a shared commitment to high standards, where every project was approached with the same diligence to excellence.</p>
+    <p>He didn't just take us on as employees, he mentored us as young adults and molded us into men. His dedication went beyond teaching skills; it was about building character and passing down values that would endure. His legacy of excellence continues to shape Distinct Designs Construction.</p>
+    <p>Mr. Trujillo laid the concrete foundation and paved the road for Distinct Designs Construction to thrive. His mentorship, diligence, and relentless pursuit of excellence continue to be the backbone of our success. We are forever grateful for his guidance, vision, and commitment to nurturing both our skills and our character.</p>
+    <p>Thank you, Mario Trujillo, for everything you have done. Your unwavering dedication and wisdom have built more than just a company, you have built a family. Distinct Designs Construction stands strong today because of the foundation you laid. We will honor you by carrying your legacy forward through the principles and values you instilled in all of us.</p>
+  </div>
+</section>
+<section class="section section--split section--tinted">
+  <div>
+    <h2>What we build</h2>
+    <p>We build luxury custom homes, whole-home remodels, and guest houses across the Coachella Valley and High Desert. We take on a limited number of projects each year, so every one gets our full attention.</p>
+  </div>
+  <div class="section--split__media reveal">
+    <img src="{p}images/site/Team-Distinct-Designs-768x576.jpg" alt="The Distinct Designs Construction team on a finished job site" width="768" height="576" loading="lazy">
+  </div>
+</section>
+<section class="section">
+  <div class="card-grid">
+    <article class="info-card"><h3>Our team</h3><p>100+ years of combined experience, with in-house specialists from structure to custom cabinetry.</p></article>
+    <article class="info-card"><h3>Our standard</h3><p>One team accountable from design to keys.</p></article>
+    <article class="info-card"><h3>Our vision</h3><p>Long-lasting relationships with clients who trust us to exceed their expectations and take care of them like family.</p></article>
+  </div>
+</section>
+<section class="section section--tinted" id="team">
+  <div class="section__header"><h2>Leadership</h2></div>
+  <!-- TODO(v2): leadership placeholders. Need names, titles, and headshots for the project manager and office leadership (Step 9). -->
+  <div class="team-grid team-grid--leadership">
+    <article class="team-card"><img src="{p}images/site/Nick-DD.jpg" alt="Nick Aguilar, owner of Distinct Designs Construction" width="600" height="700" loading="lazy"><h3>Nick Aguilar</h3><p>Owner</p></article>
+    <article class="team-card team-card--placeholder"><div class="team-card__photo"{g.ph("Leadership headshot: project manager")} role="img" aria-label="Headshot coming soon"></div><h3>Project Manager</h3><p>Name and headshot to come</p></article>
+    <article class="team-card team-card--placeholder"><div class="team-card__photo"{g.ph("Leadership headshot: office leadership")} role="img" aria-label="Headshot coming soon"></div><h3>Office Leadership</h3><p>Name and headshot to come</p></article>
+  </div>
+  <h3 class="team-subhead">In-house craftsmen</h3>
+  <div class="team-grid">
+    <article class="team-card"><img src="{p}images/site/eric-pancho-2-2.jpg" alt="Eric, custom cabinet and door specialist" width="600" height="700" loading="lazy"><h3>Eric</h3><p>Cabinet and door specialist</p></article>
+    <article class="team-card"><img src="{p}images/site/jerry-spider-1.jpg" alt="Jerry, in-house demo and plumbing specialist" width="600" height="700" loading="lazy"><h3>Jerry</h3><p>In-house demo and plumbing specialist</p></article>
+    <article class="team-card"><img src="{p}images/site/pops32.jpg" alt="Joel, tile and stone designer and installer" width="600" height="700" loading="lazy"><h3>Joel</h3><p>Tile and stone designer and installer</p></article>
+    <article class="team-card"><img src="{p}images/site/randy-hoher-drywall-and-paint-specialist-02.jpg" alt="Randy, drywall and paint specialist" width="600" height="700" loading="lazy"><h3>Randy</h3><p>Drywall and paint specialist</p></article>
+    <article class="team-card"><img src="{p}images/site/fredo.jpg" alt="Fredo, general lead tile and stone installer" width="600" height="700" loading="lazy"><h3>Fredo</h3><p>General lead tile and stone installer</p></article>
+    <article class="team-card"><img src="{p}images/site/Travis-Vanzee.jpg" alt="Travis Vanzee, electrician" width="600" height="700" loading="lazy"><h3>Travis</h3><p>Electrician specialist</p></article>
+  </div>
+</section>
+<section class="section">
+  <h2>Our standards</h2>
+  {WHY(g.WHY_BUILD)}
+  {R(slug, [("Our Process", "our-process"), ("Portfolio", "projects"), (JL, JOURNEY)])}
+</section>
+"""
+    W(slug, S(slug,
+              "About Distinct Designs Construction | Three Generations",
+              "Three generations, one standard. Meet Nick Aguilar and the Distinct Designs team: 18 years building in the desert, 100+ years of combined crew experience.",
+              body))
+
+
+def start_your_journey():
+    slug = JOURNEY
+    p = g.prefix(slug)
+    body = PH(slug, "images/process-crew-home.webp",
+              "The Distinct Designs crew inside a completed custom home, desert mountains beyond the open sliders",
+              1200, 900, LIC, "Start Your Journey",
+              "Tell us about your project. Every inquiry is reviewed personally, and you'll hear back the same day.")
+    body += f"""
 <section class="section" id="form">
-  <h2>Distinct Designs contact details</h2>
-  <div class="two-col" style="margin-top:1.5rem">
+  <div class="two-col journey-layout">
     <div>
+      <h2>Contact details</h2>
       <h3>Phone</h3>
       <p><a href="tel:{TEL}">{PHONE}</a></p>
       <h3>Email</h3>
+      <!-- TODO(v2): email must reach Nick directly and sync into GHL. Keep the Gmail or switch to nick@distinctdesignspro.com (Nick to decide). -->
       <p><a href="mailto:{EMAIL}">{EMAIL}</a></p>
       <h3>Location</h3>
-      <p>Joshua Tree, CA</p>
-      <h3>Service areas include</h3>
-      <p>{areas}.</p>
-      <p>Instagram: <a href="https://www.instagram.com/distinctdesignsconst/">@distinctdesignsconst</a><br>
+      <p>{g.LOCATION}</p>
+      <h3>License</h3>
+      <p>CA Lic. #1145786</p>
+      <p style="margin-top:1.5rem">Instagram: <a href="https://www.instagram.com/distinctdesignsconst/">@distinctdesignsconst</a><br>
       Facebook: <a href="https://www.facebook.com/profile.php?id=61561101665757">Distinct Designs</a><br>
       Yelp: <a href="https://www.yelp.com/biz/distinct-designs-yucca-valley-6">Distinct Designs, Yucca Valley</a></p>
     </div>
     <div>
-      <h3>Start your custom home journey now</h3>
-      {F(CONTACT, "Contact Distinct Designs Construction")}
+      <h2>Tell us about your project</h2>
+      <!--
+        TODO(v2) GHL FORM BUILDER (out of scope for this repo; edit the form in GHL so it keeps feeding the CRM).
+        Step 11 spec:
+          - First name, last name, phone, email: required
+          - Project type: New custom home ($1M+) · Whole-home remodel ($250K+) · Guest house or ADU · Kitchen or bath remodel · Other
+          - Investment range: Under $250K · $250K–$800K · $800K–$1.5M · $1.5M–$3M · $3M-5M+
+            (Orion, Oct 3: custom homes start at $1M, so the first custom-home band should start at $1M. Re-cut the bands in GHL.)
+          - Timeline to start: 0–6 months · 6–12 months · 12–24 months · Just planning
+          - Property: I own the lot · I own the home · In escrow · Still looking
+          - City: text
+          - How did you hear about us?: Google search · Google ad · Instagram · Facebook · Realtor · Architect or designer · Referral · Jobsite sign · Other
+          - Message: text
+          - Remove the current "Services Interest In" checkboxes
+          - Submit button in brand gold (#c8ab72) instead of green
+          - New submissions notify Nick directly
+          - Tag "Kitchen or bath remodel" inquiries in GHL (take them when the crew has an opening, without advertising them)
+          - If the onboarding workflow branches on the old checkboxes, update it at the same time
+          - Submit a test before launch (Step 14)
+      -->
+      {F(CONTACT, "Start your journey with Distinct Designs Construction")}
+      <p class="form-note">We'll be in touch the same day.</p>
     </div>
   </div>
 </section>
 """
     W(slug, S(slug,
-              "Contact Distinct Designs Construction | Joshua Tree, CA",
-              "Call Distinct Designs Construction at (760) 221-4290 or email distinctdesigns360@gmail.com. Joshua Tree, CA. Serving the High Desert and Coachella Valley.",
+              "Start Your Journey | Distinct Designs Construction",
+              "Start your custom home, whole-home remodel, or guest house project with Distinct Designs Construction. Every inquiry is reviewed personally. Call (760) 221-4290.",
               body))
+
+
+def not_found():
+    """Branded 404 (Vercel serves /404.html with HTTP 404)."""
+    body = f"""
+<section class="section">
+  <p class="eyebrow">Page not found</p>
+  <h1>This page has moved</h1>
+  <p class="page-intro">The page you're looking for isn't here. Try one of these instead.</p>
+  {R("", [("Custom Homes", "services/custom-home-build"), ("Luxury Remodels", "services/whole-home-remodel"), ("Portfolio", "projects"), (JL, JOURNEY)])}
+</section>
+"""
+    html = S("", "Page Not Found | Distinct Designs Construction",
+             "The page you were looking for is not on the Distinct Designs Construction site. Explore custom homes, luxury remodels, and our portfolio.", body)
+    html = g.link_cities(html, "")
+    # Served at any missing URL, so make every local path root-absolute and drop the canonical.
+    html = re.sub(r'(href|src)="(?!https?:|tel:|mailto:|#|/|data:)(\./)?', r'\1="/', html)
+    html = re.sub(r'<link rel="canonical"[^>]*>\n?', "", html)
+    (g.ROOT / "404.html").write_text(html, encoding="utf-8")
+    print("404.html")
+
+
+# Step 10 city pages. Intros and "Building in" sections are DRAFT copy for Nick
+# to approve. They use general, public knowledge about each town plus facts
+# already on the site (Cubero, Alturas, Hilltop). They do not claim projects,
+# addresses, or counts in a town that the site does not publish.
+CITY_PAGES = [
+    {
+        "slug": "service-areas/palm-springs", "name": "Palm Springs", "region": "Coachella Valley",
+        "hero": ("images/site/hilltop-01-4.webp", "Finished primary bath with a freestanding tub, sunken soaking tub, and desert light through tall windows", 1440, 1080),
+        "hero_ph": "Palm Springs hero: a finished Palm Springs or low-desert home (Step 13). No Joshua trees.",
+        "intro": [
+            "Palm Springs homes carry a design legacy few towns can match: mid-century modern landmarks, Spanish Colonial estates in Old Las Palmas and the Movie Colony, and new builds tucked against the San Jacinto foothills. Buyers here want a home that respects that heritage and still lives like a modern house, with clean lines, indoor-outdoor living, and systems built for summer heat.",
+            "Whether it's a ground-up custom home or a whole-home remodel of a classic, the work starts with a plan and a price you can trust before anything is built.",
+        ],
+        "building": [
+            "Building at this level in Palm Springs usually means more review than buyers expect. Depending on the property, plans may go through city architectural review, historic-district or HOA design guidelines, and hillside and view rules on lots against the mountains.",
+            "Remodels of older homes bring their own questions: original electrical and plumbing, single-pane glass, and additions that have to match the original architecture. We work through those items during pre-construction, so they're priced and planned before the first wall comes down.",
+        ],
+        "project": "cubero", "review": None,
+    },
+    {
+        "slug": "service-areas/rancho-mirage", "name": "Rancho Mirage", "region": "Coachella Valley",
+        "hero": ("images/site/hill-top-remodel-7.webp", "Spa-level bathroom with a freestanding tub, white tile walls, and open desert through floor-to-ceiling windows", 1440, 1080),
+        "hero_ph": "Rancho Mirage hero: a finished Rancho Mirage or low-desert home (Step 13). No Joshua trees.",
+        "intro": [
+            "Rancho Mirage is country club living at its most established: gated communities around championship golf, estate lots with mountain and fairway views, and homes built for entertaining and long, quiet winters. Many buyers here are updating a 1970s or 1980s club home, or replacing it with something built for how they live now.",
+            "Our role is to turn that vision into a plan and a price you can trust before anything is torn out or built.",
+        ],
+        "building": [
+            "Most work in Rancho Mirage runs through a country club or HOA architectural committee before it reaches the city. Committees can set rules on height, rooflines, exterior colors and materials, setbacks from the course, contractor hours, and site access, and review can take weeks.",
+            "We build those approvals into the schedule and the budget from day one, so a committee comment doesn't become a change order once the work has started.",
+        ],
+        "project": "alturas", "review": None,
+    },
+    {
+        "slug": "service-areas/palm-desert", "name": "Palm Desert", "region": "Coachella Valley",
+        "hero": ("images/site/DSC00366-HDR-scaled.jpg", "Finished walk-in shower with a stone pebble floor, floating vanity, vessel sink, and brushed-brass fixtures", 2560, 1700),
+        "hero_ph": "Palm Desert hero: a finished Palm Desert or low-desert home (Step 13). No turf patio, no Joshua trees.",
+        "intro": [
+            "Palm Desert offers everything from hillside estates in the south foothills to gated golf communities and established neighborhoods close to El Paseo. Buyers here often want a full-time desert home with the space, finish level, and outdoor living of a resort, without the maintenance headaches.",
+            "Whether you're building on a hillside lot or reworking a home you already own, we plan and price every major decision before construction begins.",
+        ],
+        "building": [
+            "Building in Palm Desert can involve city design review, HOA or club architectural guidelines in gated communities, and hillside rules on grading, height, and views in the foothills.",
+            "Desert sites also bring wind, sand, drainage, and extreme summer heat. We plan for them early: insulation, glazing, shade, and mechanical systems sized for the climate, so the home stays comfortable and the budget holds.",
+        ],
+        "project": "hilltop", "review": None,
+    },
+    {
+        "slug": "service-areas/indian-wells", "name": "Indian Wells", "region": "Coachella Valley",
+        "hero": ("images/site/hilltop-01-3.webp", "Finished bathroom with a freestanding tub, rattan cabinet, and desert mountains through tall windows", 1440, 1080),
+        "hero_ph": "Indian Wells hero: a finished Indian Wells or low-desert home (Step 13). No Joshua trees.",
+        "intro": [
+            "Indian Wells is one of the most exclusive addresses in the Coachella Valley: a small city of gated communities, golf and tennis clubs, and estate homes with long mountain views. Buyers here expect a resort-level finish and a builder who handles the details without being asked.",
+            "We take on a limited number of projects each year, so a custom home or remodel in Indian Wells gets our full attention from design to keys.",
+        ],
+        "building": [
+            "Nearly every project in Indian Wells sits inside a gated community, which means club or HOA architectural review in addition to city plan review. Expect standards for massing, rooflines, materials, landscaping, and construction hours, plus coordination with the gate for every delivery and trade.",
+            "We work through those requirements during pre-construction and price them in, so approvals and access are handled before the build starts.",
+        ],
+        "project": "cubero", "review": None,
+    },
+    {
+        "slug": "service-areas/la-quinta", "name": "La Quinta", "region": "Coachella Valley",
+        "hero": ("images/project-la-mirada.webp", "Renovated open-plan kitchen and living area with a marble island, brass pendants, and oak floors", 900, 1200),
+        "hero_ph": "La Quinta hero: a finished La Quinta or low-desert home (Step 13). No Joshua trees.",
+        "intro": [
+            "La Quinta pairs some of the desert's most private golf communities with the Santa Rosa Mountains rising right behind them. From the Cove's hillside streets to gated club estates, buyers here want homes that frame the mountains and handle serious entertaining.",
+            "Whether you're building new or remodeling a home you already own, we plan and price every decision before construction begins.",
+        ],
+        "building": [
+            "Projects in La Quinta often need both city review and a club or HOA architectural committee. Lots near the mountains can bring hillside rules, view corridors, and rock or grading work that has to be understood before design is final.",
+            "Our pre-construction process looks at the site, the approvals, and the access early, so the budget reflects what the property actually needs.",
+        ],
+        "project": "alturas", "review": None,
+    },
+    {
+        "slug": "service-areas/yucca-valley", "name": "Yucca Valley", "region": "High Desert",
+        "hero": ("images/project-alturas.webp", "Alturas custom home in progress: sheathed walls with a circular window opening, against the desert and mountains", 1400, 932),
+        "hero_ph": "Yucca Valley hero: a finished Yucca Valley home (Step 13). Alturas, now building, stands in.",
+        "intro": [
+            "Yucca Valley is home base. We've spent 18 years building in the High Desert, and this is where our crew lives and works. Buyers here want room to breathe: acreage, big skies, and homes that sit naturally on the land instead of fighting it.",
+            "From ground-up custom homes on raw parcels to whole-home remodels and guest houses, we know these lots and what they take.",
+        ],
+        "building": [
+            "High Desert lots come with conditions the low desert rarely has. Protected western Joshua trees can limit where a home can go and add real cost if they need to be relocated. Many parcels need a well or a long utility run for water, a septic system sized and placed correctly, and a plan for the washes and natural water channels that cross the land.",
+            "On our Cubero build, a site analysis moved the home to a better location, avoided over $90,000 in Joshua tree relocation and over $150,000 in regrading, and replaced a planned $58,000 well with a water line at half that cost. That's the kind of planning we do before anything is built.",
+        ],
+        "project": "cubero", "review": "katie",
+    },
+    {
+        "slug": "service-areas/joshua-tree", "name": "Joshua Tree", "region": "High Desert",
+        "hero": ("images/site/Custom-Desert-Home.webp", "Cubero, a ground-up custom home by Distinct Designs Construction, seen from above", 1536, 1024),
+        "hero_ph": "",
+        "intro": [
+            "Joshua Tree draws people for the boulders, the dark skies, and the national park at its doorstep. Buyers here want homes that feel like part of the landscape: low profiles, big glass, and outdoor spaces made for long desert evenings.",
+            "We build and remodel homes across the High Desert, and we plan and price every decision before construction begins.",
+        ],
+        "building": [
+            "Building near the park means working with the land as it is. Western Joshua trees are protected, so where the home sits matters from the first site visit. Most parcels rely on septic, many need a well or a water line extension, and seasonal washes shape where you can build and how the site drains.",
+            "Our Cubero project shows why it matters. Before a permit was filed, we found a building location that avoided relocating protected Joshua trees, worked with the natural water channels instead of regrading the parcel, and replaced a $58,000 well with a water line at half the cost.",
+        ],
+        "project": "alturas", "review": "benoit",
+    },
+]
+
+CITY_REVIEWS = {"katie": g.Q_KATIE, "benoit": g.Q_BENOIT}
+
+
+def service_areas():
+    for page in CITY_PAGES:
+        slug, name, region = page["slug"], page["name"], page["region"]
+        img, alt, w, h = page["hero"]
+        eyebrow = f"CA Lic. #1145786 · {region}"
+        body = H(slug, img, alt, w, h, "", eyebrow,
+                 f"Luxury Custom Homes &amp; Remodels in {name}",
+                 "Custom homes from $1M and whole-home remodels from $250K. One team from design to keys.",
+                 HREF(slug, JOURNEY), JL, page=True, placeholder=page["hero_ph"])
+        intro = "".join(f"<p>{t}</p>" for t in page["intro"])
+        building = "".join(f"<p>{t}</p>" for t in page["building"])
+        key = page["project"]
+        review = CITY_REVIEWS.get(page["review"])
+        review_html = REVIEWS([review], tinted=False) if review else f"<!-- TODO(v2): no published review from {name} yet. Add one when it comes in (Step 10). -->"
+        body += f"""
+<section class="section">
+  <!-- TODO(v2) DRAFT: {name} intro for Nick to approve (Step 10). -->
+  <div class="prose" data-draft="city-intro">{intro}</div>
+</section>
+<section class="section section--tinted">
+  <!-- TODO(v2) DRAFT: "Building in {name}" for Nick to approve. Confirm local review and site details. -->
+  <h2>Building in {name}</h2>
+  <div class="prose" data-draft="city-building">{building}</div>
+</section>
+<section class="section" id="services">
+  <h2>What we build in {name}</h2>
+  {service_cards(slug)}
+</section>
+<section class="section section--tinted" id="projects">
+  <!-- TODO(v2): featured project. Swap in a {name} project when one is published. -->
+  <div class="section__header"><h2>Featured project</h2></div>
+  {P(slug, [key], {key: CASE_LABELS[key]})}
+</section>
+{review_html}
+<section class="section{"" if review else ""}" id="why-us">
+  <h2>How the work is done</h2>
+  {WHY(g.WHY_BUILD)}
+</section>
+{journey_cta(slug, f"Start your {name} project", "Tell us about your project. Every inquiry is reviewed personally, and you'll hear back the same day.")}
+"""
+        W(slug, S(slug,
+                  f"Luxury Custom Homes &amp; Remodels in {name} · Distinct Designs",
+                  f"Luxury custom homes from $1M and whole-home remodels from $250K in {name}, CA. One team from design to keys, planned and priced before construction.",
+                  body))
 
 
 def privacy():
@@ -922,104 +1051,6 @@ def thanks():
     W(slug, S(slug,
               "Guide Thank You | Distinct Designs Construction",
               "Thank you for requesting the Distinct Designs planning guide.",
-              body))
-
-
-def service_partial_remodels():
-    """Modest kitchens, bathrooms, and additions page.
-
-    Source: the homepage FAQ lists Designer Kitchen Renovations and Remodels
-    and Luxury Bathroom Renovations, Remodels and Additions as their own
-    items, next to whole-home renovations. Kitchen and bath bullets are the
-    ones already published on the services page. /remodels/ stays the
-    best-general-contractor page and is not this service.
-    """
-    slug = "services/remodels"
-    p = g.prefix(slug)
-    body = f"""
-<header class="hero hero--page">
-  <img class="hero__image" src="{p}images/process-break-bath.webp" alt="Spa-level bathroom remodel with a freestanding soaking tub, subway tile, penny-round floor and desert views" width="1920" height="960" fetchpriority="high">
-  <div class="hero__scrim" aria-hidden="true"></div>
-  <div class="hero__content reveal">
-    <p class="eyebrow">Remodels</p>
-    <h1>Kitchen, bathroom, and addition remodels</h1>
-    <p class="subhead">Designer kitchen renovations and remodels, and luxury bathroom renovations, remodels and additions. A whole-home remodel is a separate service.</p>
-  </div>
-</header>
-<section class="section">
-  <!-- TODO: No project count, price, timeline, or testimonial is published for a kitchen, bathroom, or addition on its own. Additions are named in the homepage FAQ and are not described further. Do not attach whole-home reviews or case studies here. Do not add a license number; the site publishes both #1039394 and #1145786. The photo is an existing bathroom image and is not labeled as a partial-remodel project. -->
-  <h2>A smaller scope than a whole-home remodel</h2>
-  <div class="prose">
-    <p>The homepage FAQ lists these on their own, next to whole-home renovations: Designer Kitchen Renovations and Remodels, and Luxury Bathroom Renovations, Remodels and Additions.</p>
-    <p>The services page describes remodeling as a complete structural transformation or a targeted renovation of the spaces that matter most. A whole-home remodel prices the kitchen, the baths, and the rest of the house as one project. <a href="{HREF(slug, "services/whole-home-remodel")}">That service is Whole House Remodel</a>.</p>
-    <p>We specialize in custom luxury kitchen and bathroom remodels, custom tile and stone, backsplashes, showers, mosaics, and floors.</p>
-  </div>
-  <div class="two-col" style="margin-top:1.5rem">
-    <article class="info-card"><h3>Kitchens</h3><ul class="check-list"><li>Luxury kitchen redesigns and custom layouts</li><li>Custom cabinetry and built-in storage</li><li>Designer backsplashes and feature tile</li></ul></article>
-    <article class="info-card"><h3>Bathrooms</h3><ul class="check-list"><li>Spa-style bathrooms and steam rooms</li><li>Designer shower systems and soaking tubs</li><li>Custom vanities and bespoke storage</li></ul></article>
-  </div>
-  <p class="page-intro" style="margin-top:1.5rem">Additions are named in that same FAQ line, with the bathroom renovations and remodels. No separate scope for an addition is published.</p>
-  <div class="link-row">
-    <a class="btn btn--nav" href="{HREF(slug, "services/whole-home-remodel")}">Whole House Remodel</a>
-    <a class="btn btn--primary" href="{HREF(slug, "contact")}">Contact</a>
-  </div>
-  <p style="margin-top:1.25rem">Call <a href="tel:{TEL}">{PHONE}</a>.</p>
-</section>
-"""
-    W(slug, S(slug,
-              "Kitchen, Bathroom, and Addition Remodels | Distinct Designs",
-              "Designer kitchen renovations and remodels, and luxury bathroom renovations, remodels and additions, from Distinct Designs Construction. Whole-home remodels are a separate service.",
-              body))
-
-
-def remodels():
-    slug = "remodels"
-    p = g.prefix(slug)
-    body = f"""
-<header class="hero hero--page">
-  <img class="hero__image" src="{p}images/hero-remodel.webp" alt="Finished open-plan living room and kitchen with a stone feature wall, oak floors and sliding doors onto the desert" width="1920" height="960">
-  <div class="hero__scrim" aria-hidden="true"></div>
-  <div class="hero__content reveal">
-    <p class="eyebrow">Remodels</p>
-    <h1>The best general contractor in the High Desert and all of the Coachella Valley</h1>
-  </div>
-</header>
-<section class="section">
-  <h2>Distinct Designs · the best general contractor in the High Desert and all of the Coachella Valley</h2>
-  <h3>We do whole home remodels.</h3>
-  <div class="prose">
-    <p>Transform your house into the home you've always wanted with expert whole home remodeling services from Distinct Designs Construction. We specialize in complete home renovations, custom interior upgrades, kitchen and bathroom remodeling, open-concept layouts, flooring, lighting, and modern design solutions tailored to your lifestyle. Whether you're updating an older property or creating a luxury living space, our experienced remodeling team delivers high-quality craftsmanship, innovative design, and attention to detail from start to finish. Serving homeowners throughout the Coachella Valley, we provide professional whole house remodels that increase comfort, functionality, and property value.</p>
-    <p>Joshua Tree · Yucca Valley · Twentynine Palms · Pioneer Town · Landers · Morongo Valley · Desert Hot Springs · Palm Springs · Palm Desert · Cathedral City · Indian Wells · Rancho Mirage · Greater Southern California</p>
-  </div>
-  <blockquote class="prose"><p>What makes us the best is we stay at your side from the first sketch to the moment you walk through the finished door, and we're proud of every inch of what's behind it.</p></blockquote>
-  <div class="card-grid">
-    <article class="info-card"><h3>Fully integrated design-build</h3><p>Architecture, engineering, permitting, and construction under one roof. One team, one contract, one point of accountability.</p></article>
-    <article class="info-card"><h3>Engineered for desert living</h3><p>Materials, systems, and structural methods built for extreme heat, UV, and wind, not repurposed coastal California specs.</p></article>
-    <article class="info-card"><h3>Transparent pricing, no surprises</h3><p>Detailed scopes, honest timelines, and real conversations about budget before work begins.</p></article>
-    <article class="info-card"><h3>Obsessed with the details</h3><p>The tile work, the cabinetry, the transitions: this is where most builders cut corners. It's where we set our standard.</p></article>
-  </div>
-</section>
-<section class="section section--tinted">
-  <p class="eyebrow">Signature inclusions, every remodel</p>
-  <h2>Remodeling is your opportunity to build it right this time</h2>
-  <div class="two-col" style="margin-top:1.5rem">
-    <article class="info-card"><h3>Artisan surfaces and premium stonework</h3><ul class="check-list"><li>Luxury tile and natural stone installation</li><li>Custom cabinetry and built-in millwork</li><li>Stone facades, feature walls and hardscape</li><li>Polished concrete and premium flooring</li></ul></article>
-    <article class="info-card"><h3>Technology integration and home cinema</h3><ul class="check-list"><li>Dedicated screening room design and build</li><li>Whole-home AV and smart home retrofit</li><li>Structured wiring built into the renovation</li></ul></article>
-  </div>
-  {R(slug, [("Whole-home remodel service", "services/whole-home-remodel"), ("Contact", "contact")])}
-</section>
-<section class="lead-section">
-  <div class="lead-section__media"><img src="{p}images/footer-cta-remodel.webp" alt="Finished open-plan living room and kitchen remodel" width="1600" height="1200" loading="lazy"></div>
-  <div class="lead-section__content">
-    <h2>Begin your project.</h2>
-    <p>Every Distinct Designs project starts with a private consultation: a direct conversation about your vision, your site, and what it actually takes to build it right. No sales pitch. No pressure. We take on a limited number of projects each year to ensure every client receives our full attention.</p>
-    <a class="btn btn--primary" href="{HREF(slug, "contact")}">Start your journey today</a>
-  </div>
-</section>
-"""
-    W(slug, S(slug,
-              "Whole-Home Remodels in the High Desert & Coachella Valley | Distinct Designs",
-              "Whole-home remodels, kitchens, and bathrooms from Distinct Designs Construction across the High Desert and Coachella Valley.",
               body))
 
 
@@ -1216,173 +1247,3 @@ def guides():
         W(slug, S(slug, title, meta, body))
 
 
-def service_areas():
-    """One page per published primary city that Orion asked for.
-
-    Copy uses only facts already on the site: the service area list, the
-    homepage FAQ, the services-page sentence that names some of these cities,
-    the Joshua Tree locality, the Yucca Valley Yelp title, and two reviews
-    that name a city. Unknown local details stay in HTML comments and README.
-    """
-    shared_services = (
-        ("Custom Home Build", "services/custom-home-build",
-         "Ground-up custom homes from $870K to $5M+. One dedicated crew from groundbreaking to move-in, and a budget matched before you sign."),
-        ("Whole House Remodel", "services/whole-home-remodel",
-         "Designer kitchens, spa bathrooms, and full-home transformations, priced as one number before demo day."),
-        ("Custom ADU and Guest Suite", "services/custom-adu",
-         "Guest suites built to the same standard as our luxury homes, with permitting handled."),
-        ("Remodels", "services/remodels",
-         "Designer kitchen renovations and remodels, and luxury bathroom renovations, remodels and additions."),
-    )
-    pages = [
-        {
-            "slug": "service-areas/joshua-tree",
-            "name": "Joshua Tree",
-            "title": "Custom Homes, Remodels, and ADUs in Joshua Tree, CA | Distinct Designs",
-            "meta": "Distinct Designs Construction serves Joshua Tree, CA with custom home builds, whole-home remodels, and custom ADUs and guest suites. Call (760) 221-4290.",
-            "image": "images/site/Custom-Desert-Home.webp",
-            "alt": "Photograph of the Cubero custom home by Distinct Designs Construction",
-            "width": 1536,
-            "height": 1024,
-            "extra": """
-<!-- TODO: No street address or ZIP is published. No count of Joshua Tree projects is published. Benoit R.'s review names a remodel in Joshua Tree and does not name a street or a project. Do not add a license number here; the site publishes both #1039394 and #1145786. The hero photo is the Cubero custom home, labeled High Desert, not a Joshua Tree address. -->
-<p>Joshua Tree is where Distinct Designs Construction publishes its location: Joshua Tree, CA. No street address is published. Joshua Tree is on the company's service area list, and the services page names it as a place where Distinct Designs builds luxury custom homes. The homepage FAQ names it among the places the company serves.</p>
-<p>A published client review from Benoit R. describes a complete remodel in Joshua Tree.</p>
-""" + Q([("A complete remodel in Joshua Tree. Professional, detail-oriented, delivered on time and on budget.", "Benoit R. · Joshua Tree")]),
-        },
-        {
-            "slug": "service-areas/yucca-valley",
-            "name": "Yucca Valley",
-            "title": "Custom Homes, Remodels, and ADUs in Yucca Valley, CA | Distinct Designs",
-            "meta": "Distinct Designs Construction serves Yucca Valley with custom home builds, whole-home remodels, and custom ADUs and guest suites. Joshua Tree, CA. Call (760) 221-4290.",
-            "image": "images/hero-remodel.webp",
-            "alt": "Finished open-plan living room and kitchen with a stone feature wall, oak floors and sliding doors onto the desert",
-            "width": 1920,
-            "height": 960,
-            "extra": """
-<!-- TODO: No street address in Yucca Valley is published. No project count is published. The Yelp listing title is not an office address. The company location on this site is Joshua Tree, CA. Katie Lee's review names Yucca Valley/Landers and does not name a street. Do not add a license number here. The hero photo is not labeled as a Yucca Valley project. -->
-<p>Yucca Valley is on Distinct Designs Construction's published service area list. The services page names Yucca Valley as a place where Distinct Designs builds luxury custom homes. The homepage FAQ names it among the places the company serves. The company publishes its location as Joshua Tree, CA.</p>
-<p>The published Yelp listing is titled Distinct Designs, Yucca Valley. <a href="https://www.yelp.com/biz/distinct-designs-yucca-valley-6">View the Yelp listing</a>.</p>
-<p>A published client review from Katie Lee names work in Yucca Valley and Landers.</p>
-""" + Q([("Nick and his crew were by far the best contractors I have worked with out here in Yucca Valley/Landers.", "Katie Lee")]),
-        },
-        {
-            "slug": "service-areas/palm-springs",
-            "name": "Palm Springs",
-            "title": "Custom Homes, Remodels, and ADUs in Palm Springs, CA | Distinct Designs",
-            "meta": "Distinct Designs Construction serves Palm Springs with custom home builds, whole-home remodels, and custom ADUs and guest suites. Joshua Tree, CA. Call (760) 221-4290.",
-            "image": "images/hero-remodel.webp",
-            "alt": "Finished open-plan living room and kitchen with a stone feature wall, oak floors and sliding doors onto the desert",
-            "width": 1920,
-            "height": 960,
-            "extra": """
-<!-- TODO: No Palm Springs project, project count, street address, or testimonial is published. Do not invent them. Do not add a license number here. The hero photo is not labeled as a Palm Springs project. -->
-<p>Palm Springs is on Distinct Designs Construction's published service area list. The services page names Palm Springs as a place where Distinct Designs builds luxury custom homes. The homepage FAQ names it among the places the company serves. The company publishes its location as Joshua Tree, CA.</p>
-""",
-        },
-        {
-            "slug": "service-areas/palm-desert",
-            "name": "Palm Desert",
-            "title": "Custom Homes, Remodels, and ADUs in Palm Desert, CA | Distinct Designs",
-            "meta": "Distinct Designs Construction serves Palm Desert with custom home builds, whole-home remodels, and custom ADUs and guest suites. Joshua Tree, CA. Call (760) 221-4290.",
-            "image": "images/process-break-patio.webp",
-            "alt": "Desert backyard patio at sunset with a hot tub, string lights, lounge seating and a Joshua Tree, CA sign",
-            "width": 1920,
-            "height": 1440,
-            "extra": """
-<!-- TODO: No Palm Desert project, project count, street address, or testimonial is published. Palm Desert is on the service area list and in the homepage FAQ. It is not in the services-page sentence that names cities where luxury custom homes are built. Do not promote it into that sentence. Do not add a license number here. The hero photo is not labeled as a Palm Desert project. The Joshua Tree sign in the photo is a sign, not a Palm Desert address. -->
-<p>Palm Desert is on Distinct Designs Construction's published service area list. The homepage FAQ names Palm Desert among the places the company serves in the High Desert and Coachella Valley. The planning guide pages also name Palm Desert alongside Yucca Valley, Joshua Tree, Palm Springs, Rancho Mirage, and La Quinta. The company publishes its location as Joshua Tree, CA.</p>
-""",
-        },
-        {
-            "slug": "service-areas/la-quinta",
-            "name": "La Quinta",
-            "title": "Custom Homes, Remodels, and ADUs in La Quinta, CA | Distinct Designs",
-            "meta": "Distinct Designs Construction serves La Quinta with custom home builds, whole-home remodels, and custom ADUs and guest suites. Joshua Tree, CA. Call (760) 221-4290.",
-            "image": "images/process-break-terrace.webp",
-            "alt": "Desert terrace at dusk with a fire bowl, string lights and a spa, valley lights beyond",
-            "width": 1920,
-            "height": 1081,
-            "extra": """
-<!-- TODO: No La Quinta project, project count, street address, or testimonial is published. La Quinta is on the service area list, in the homepage FAQ, and on the planning guide pages. It is not in the services-page sentence that names cities where luxury custom homes are built. Do not add a license number here. The hero photo is not labeled as a La Quinta project. -->
-<p>La Quinta is on Distinct Designs Construction's published service area list. The homepage FAQ names La Quinta among the places the company serves. The planning guide pages also name La Quinta alongside Yucca Valley, Joshua Tree, Palm Springs, Palm Desert, and Rancho Mirage. The company publishes its location as Joshua Tree, CA.</p>
-""",
-        },
-        {
-            "slug": "service-areas/indian-wells",
-            "name": "Indian Wells",
-            "title": "Custom Homes, Remodels, and ADUs in Indian Wells, CA | Distinct Designs",
-            "meta": "Distinct Designs Construction serves Indian Wells with custom home builds, whole-home remodels, and custom ADUs and guest suites. Joshua Tree, CA. Call (760) 221-4290.",
-            "image": "images/site/Custom-Desert-Home.webp",
-            "alt": "Photograph of the Cubero custom home by Distinct Designs Construction",
-            "width": 1536,
-            "height": 1024,
-            "extra": """
-<!-- TODO: No Indian Wells project, project count, street address, or testimonial is published. Do not invent them. Do not add a license number here. The hero photo is the Cubero custom home, labeled High Desert, not an Indian Wells address. -->
-<p>Indian Wells is on Distinct Designs Construction's published service area list. The services page names Indian Wells as a place where Distinct Designs builds luxury custom homes. The homepage FAQ names it among the places the company serves. The company publishes its location as Joshua Tree, CA.</p>
-""",
-        },
-    ]
-    for page in pages:
-        slug = page["slug"]
-        p = g.prefix(slug)
-        name = page["name"]
-        cards = []
-        for label, target, text in shared_services:
-            cards.append(f"""<a class="service-card" href="{HREF(slug, target)}">
-      <h3>{label}</h3>
-      <p>{text}</p>
-      <span class="service-card__more">Service page</span>
-    </a>""")
-        body = f"""
-<header class="hero hero--page hero--area">
-  <img class="hero__image" src="{p}{page["image"]}" alt="{page["alt"]}" width="{page["width"]}" height="{page["height"]}" fetchpriority="high">
-  <div class="hero__scrim" aria-hidden="true"></div>
-  <div class="hero__content reveal">
-    <p class="eyebrow">Service area</p>
-    <h1>{name} custom homes, remodels, and ADUs</h1>
-    <p class="subhead">Distinct Designs Construction serves {name} with custom home builds, whole-home remodels, and custom ADUs and guest suites.</p>
-  </div>
-</header>
-<section class="section">
-  <h2>Work in {name}</h2>
-  <div class="prose">
-    {page["extra"]}
-    <p>Call <a href="tel:{TEL}">{PHONE}</a> or email <a href="mailto:{EMAIL}">{EMAIL}</a>. Licensed, bonded, and insured.</p>
-  </div>
-</section>
-<section class="section section--tinted" id="services">
-  <div class="section__header">
-    <h2>Services in {name}</h2>
-    <p>The services Distinct Designs publishes, offered in {name} because {name} is on the service area list. Remodels is the smaller scope: kitchens, bathrooms, and additions.</p>
-  </div>
-  <div class="service-grid">
-    {"".join(cards)}
-  </div>
-  <p class="page-intro" style="margin-top:1.5rem"><a href="{HREF(slug, "services/custom-home-build")}">Custom Home Build</a>, <a href="{HREF(slug, "services/whole-home-remodel")}">Whole House Remodel</a>, <a href="{HREF(slug, "services/custom-adu")}">Custom ADU and Guest Suite</a>, and <a href="{HREF(slug, "services/remodels")}">Remodels</a>.</p>
-</section>
-<section class="section" id="why-us">
-  <h2>How the work is done</h2>
-  <p class="page-intro">These are the standards published for Distinct Designs projects.</p>
-  {WHY(g.WHY_BUILD)}
-</section>
-<section class="section section--tinted" id="areas-served">
-  <h2>The published service area</h2>
-  <p class="page-intro">{name} sits on this list with the rest of the High Desert and Coachella Valley.</p>
-  {A(slug)}
-</section>
-<section class="lead-section" id="form">
-  <div class="lead-section__media"><img src="{p}images/footer-cta.webp" alt="Finished great room with wood floors and desert-view windows" width="1600" height="1200" loading="lazy"></div>
-  <div class="lead-section__content">
-    <h2>Talk about a project in {name}</h2>
-    <p>Call <a href="tel:{TEL}">{PHONE}</a>, or go to the contact page and send a note.</p>
-    <a class="btn btn--primary" href="{HREF(slug, "contact")}">Contact Distinct Designs</a>
-  </div>
-</section>
-"""
-        W(slug, S(slug, page["title"], page["meta"], body))
-
-
-def missing():
-    """Placeholder so a forgotten route is obvious during review. Not a public page."""
-    return None

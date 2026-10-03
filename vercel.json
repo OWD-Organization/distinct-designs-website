@@ -1,4 +1,77 @@
 {
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/services/remodels{/}?",
+      "destination": "/services/whole-home-remodel/",
+      "permanent": true
+    },
+    {
+      "source": "/remodels{/}?",
+      "destination": "/services/whole-home-remodel/",
+      "permanent": true
+    },
+    {
+      "source": "/best-general-contractor{/}?",
+      "destination": "/services/whole-home-remodel/",
+      "permanent": true
+    },
+    {
+      "source": "/services{/}?",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/contact{/}?",
+      "destination": "/start-your-journey/",
+      "permanent": true
+    },
+    {
+      "source": "/contact-us{/}?",
+      "destination": "/start-your-journey/",
+      "permanent": true
+    },
+    {
+      "source": "/la-mirada{/}?",
+      "destination": "/projects/la-mirada/",
+      "permanent": true
+    },
+    {
+      "source": "/hilltop{/}?",
+      "destination": "/projects/hilltop/",
+      "permanent": true
+    },
+    {
+      "source": "/cubero{/}?",
+      "destination": "/projects/cubero/",
+      "permanent": true
+    },
+    {
+      "source": "/custom-home-builder-1{/}?",
+      "destination": "/guides/custom-home-builder-1/",
+      "permanent": true
+    },
+    {
+      "source": "/custom-home-builder-2{/}?",
+      "destination": "/guides/custom-home-builder-2/",
+      "permanent": true
+    },
+    {
+      "source": "/custom-home-builder-3{/}?",
+      "destination": "/guides/custom-home-builder-3/",
+      "permanent": true
+    },
+    {
+      "source": "/projects/sun-mesa{/}?",
+      "destination": "/projects/",
+      "permanent": false
+    },
+    {
+      "source": "/sitemap_index.xml",
+      "destination": "/sitemap.xml",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

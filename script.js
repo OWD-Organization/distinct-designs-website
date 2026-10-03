@@ -64,8 +64,7 @@
         var isOpen = navToggle.getAttribute("aria-expanded") === "true";
         setMenuOpen(!isOpen);
         if (!isOpen) {
-          setMobileDropdown("services-menu-mobile", true);
-          setMobileDropdown("areas-menu-mobile", false);
+          setMobileDropdown("homes-menu-mobile", true);
         }
       });
 
@@ -242,7 +241,7 @@
       }
 
       // TODO: wire to real submission endpoint (CRM, email service, etc.)
-      leadFormNote.textContent = "Thank you. Nick's team will reach out within one business day.";
+      leadFormNote.textContent = "Thank you. Nick's team will be in touch the same day.";
       leadForm.reset();
     });
   }

@@ -16,82 +16,68 @@ ROOT = Path(__file__).resolve().parent
 
 PHONE_DISPLAY = "(760) 221-4290"
 PHONE_TEL = "+17602214290"
+# TODO(v2): Email must reach Nick directly and sync into GHL. Nick to decide:
+# keep this Gmail or switch to nick@distinctdesignspro.com.
 EMAIL = "distinctdesigns360@gmail.com"
 
-# Published service area from the current site footer, plus Coachella,
-# which the landing pages list as a city they serve.
-AREAS = [
-    "Joshua Tree",
-    "Yucca Valley",
-    "Twentynine Palms",
-    "Pioneer Town",
-    "Landers",
-    "Morongo Valley",
-    "Palm Springs",
-    "Desert Hot Springs",
-    "Palm Desert",
-    "Cathedral City",
-    "Rancho Mirage",
-    "La Quinta",
-    "Indian Wells",
-    "Indio",
-    "Coachella",
-]
+# Production origin for canonicals, OG and the sitemap. Previews stay noindexed.
+SITE_URL = "https://distinctdesignsconstruction.com"
+LICENSE = "#1145786"
+LOCATION = "Yucca Valley, CA"  # matches the Google Business Profile
+# Step 1 footer line, exactly as written in the brief.
+COMPANY_LINE = "Distinct Designs Construction · CA Lic. #1145786 · General liability &amp; workers' comp insured"
+LICENSE_EYEBROW = "CA Lic. #1145786 · Coachella Valley &amp; High Desert"
+EXPERIENCE = "18 years building in the desert. 100+ years of combined experience on our crew."
+CREW_LINE = "Our in-house crew and the same vetted trade partners on every job."
 
-PRIMARY = [
+# "Where we build" (Step 3). Each town with a city page is linked.
+WHERE_WE_BUILD = [
+    "Palm Springs",
+    "Rancho Mirage",
+    "Palm Desert",
+    "Indian Wells",
+    "La Quinta",
     "Yucca Valley",
     "Joshua Tree",
-    "Palm Springs",
-    "Palm Desert",
-    "La Quinta",
-    "Indian Wells",
+    "Pioneertown",
 ]
-SECONDARY = [
-    "Rancho Mirage",
-    "Cathedral City",
-    "Coachella",
-    "Twentynine Palms",
-    "Pioneer Town",
-    "Landers",
-    "Morongo Valley",
-    "Desert Hot Springs",
-    "Indio",
-]
+AREAS = WHERE_WE_BUILD
 
 GUIDE_FORM = "YQYYVz28qqwYJWbc8ZUw"
 CONTACT_FORM = "IbFWLZlZNETBrImKFVjN"
 REFERRAL_FORM = "MyS2TrJSOhTn1mitpihf"
 
+JOURNEY = "start-your-journey"
+JOURNEY_LABEL = "Start Your Journey"
+
+# Header (Step 3): the two things we sell and how we work. Nothing else.
+NAV_DROPDOWN_LABEL = "Luxury Custom Homes"
+NAV_DROPDOWN = [
+    ("Custom Homes", "services/custom-home-build"),
+    ("Guest Houses &amp; ADUs", "services/custom-adu"),
+]
 NAV = [
-    ("Projects", "projects"),
+    ("Luxury Remodels", "services/whole-home-remodel"),
+    ("Portfolio", "projects"),
+    ("Our Process", "our-process"),
     ("About", "about"),
-    ("Contact", "contact"),
 ]
-SERVICE_LINKS = [
-    ("Custom Home Build", "services/custom-home-build"),
-    ("Whole House Remodel", "services/whole-home-remodel"),
-    ("Custom ADU and Guest Suite", "services/custom-adu"),
-    ("Remodels", "services/remodels"),
-]
-# These six already appear on the published service-area list. Each has a page.
-# Other cities in AREAS stay as text until a page exists for them.
 AREA_LINKS = [
+    ("Palm Springs", "service-areas/palm-springs"),
+    ("Rancho Mirage", "service-areas/rancho-mirage"),
+    ("Palm Desert", "service-areas/palm-desert"),
+    ("Indian Wells", "service-areas/indian-wells"),
+    ("La Quinta", "service-areas/la-quinta"),
     ("Yucca Valley", "service-areas/yucca-valley"),
     ("Joshua Tree", "service-areas/joshua-tree"),
-    ("Palm Springs", "service-areas/palm-springs"),
-    ("Palm Desert", "service-areas/palm-desert"),
-    ("La Quinta", "service-areas/la-quinta"),
-    ("Indian Wells", "service-areas/indian-wells"),
 ]
 AREA_TARGET = dict(AREA_LINKS)
-# /remodels/ is the preserved best-general-contractor page, not the
-# kitchens/baths/additions service. Keep it reachable without reusing
-# the Services label "Remodels".
-MOBILE_EXTRA = [
-    ("Best general contractor", "remodels"),
-    ("Planning Guide", "planning-guide"),
-    ("Partners", "partners"),
-]
+
+# Google rating badge (Step 12).
+# TODO(v2): confirm the Google Business Profile URL and the current rating.
+# 4.9 / 15+ reviews is the figure already published on the guide pages.
+GBP_URL = "https://www.google.com/maps/search/?api=1&amp;query=Distinct+Designs+Construction+Yucca+Valley+CA"
+GBP_RATING = "4.9"
 
 
 def prefix(slug: str) -> str:
@@ -111,27 +97,34 @@ def asset(slug: str, path: str) -> str:
     return prefix(slug) + path
 
 
+def canonical(slug):
+    path = "/" + (slug.strip("/") + "/" if slug.strip("/") else "")
+    return SITE_URL + path
+
+
 def business_ld() -> str:
     data = {
         "@context": "https://schema.org",
         "@type": ["HomeAndConstructionBusiness", "GeneralContractor"],
+        "@id": SITE_URL + "/#business",
         "name": "Distinct Designs Construction",
+        "url": SITE_URL + "/",
         "description": (
-            "Luxury custom homes and high-end renovations across the High Desert "
-            "and greater Southern California."
+            "Luxury custom homes, whole-home remodels, and guest houses and ADUs "
+            "across the Coachella Valley and High Desert. CA Lic. #1145786."
         ),
         "telephone": "+1-760-221-4290",
         "email": EMAIL,
-        "image": "https://distinctdesignsconstruction.com/wp-content/uploads/2026/02/DD-logo-full.webp",
+        "logo": SITE_URL + "/images/site/DD-logo-full.webp",
+        "image": SITE_URL + "/images/site/Custom-Desert-Home.webp",
         "address": {
             "@type": "PostalAddress",
-            "addressLocality": "Joshua Tree",
+            "addressLocality": "Yucca Valley",
             "addressRegion": "CA",
             "addressCountry": "US",
         },
-        "areaServed": [
-            {"@type": "City", "name": city} for city in AREAS
-        ],
+        "areaServed": [{"@type": "City", "name": c} for c in WHERE_WE_BUILD]
+        + [{"@type": "Place", "name": "Coachella Valley"}, {"@type": "Place", "name": "High Desert"}],
         "sameAs": [
             "https://www.instagram.com/distinctdesignsconst/",
             "https://www.facebook.com/profile.php?id=61561101665757",
@@ -148,8 +141,8 @@ def faq_ld(items):
         "mainEntity": [
             {
                 "@type": "Question",
-                "name": q,
-                "acceptedAnswer": {"@type": "Answer", "text": a},
+                "name": re.sub(r"<[^>]+>", "", q),
+                "acceptedAnswer": {"@type": "Answer", "text": re.sub(r"<[^>]+>", "", a)},
             }
             for q, a in items
         ],
@@ -162,6 +155,8 @@ def head(slug, title, description, extra_ld=""):
     extra = ""
     if extra_ld:
         extra = f'\n<script type="application/ld+json">{extra_ld}</script>'
+    can = canonical(slug)
+    og_img = SITE_URL + "/images/site/Custom-Desert-Home.webp"
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -170,6 +165,14 @@ def head(slug, title, description, extra_ld=""):
 <title>{title}</title>
 <meta name="description" content="{description}">
 <meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="{can}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Distinct Designs Construction">
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{description}">
+<meta property="og:url" content="{can}">
+<meta property="og:image" content="{og_img}">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="{p}favicon.jpg" type="image/jpeg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -189,54 +192,34 @@ def current(slug, target):
     return ""
 
 
-def dropdown_menu(slug, label, links, menu_id, active, start_open=False):
+def dropdown_menu(slug, label, links, menu_id, start_open=False):
+    active = any(slug == t for _, t in links)
     current_attr = ' aria-current="true"' if active else ""
     expanded = "true" if start_open else "false"
     open_class = " is-open" if start_open else ""
     items = []
     for item_label, target in links:
         items.append(
-            f'<a role="menuitem" href="{href(slug, target)}"{current(slug, target)}>{item_label}</a>'
+            f'<a class="nav-subitem" role="menuitem" href="{href(slug, target)}"{current(slug, target)}>{item_label}</a>'
         )
     return f"""<div class="nav-dropdown{open_class}">
-      <button type="button" class="nav-dropdown__toggle" aria-expanded="{expanded}" aria-haspopup="true" aria-controls="{menu_id}"{current_attr}>{label}</button>
+      <button type="button" class="nav-item nav-dropdown__toggle" aria-expanded="{expanded}" aria-haspopup="true" aria-controls="{menu_id}"{current_attr}>{label}</button>
       <div class="nav-dropdown__panel" id="{menu_id}" role="menu" aria-label="{label}">
         {"".join(items)}
       </div>
     </div>"""
 
 
-def service_menu(slug, menu_id, start_open=False):
-    on_services = slug == "services" or slug.startswith("services/")
-    return dropdown_menu(slug, "Services", SERVICE_LINKS, menu_id, on_services, start_open)
-
-
-def area_menu(slug, menu_id):
-    on_area = slug.startswith("service-areas/")
-    return dropdown_menu(slug, "Service Areas", AREA_LINKS, menu_id, on_area)
-
-
 def nav(slug):
     p = prefix(slug)
-    links = [service_menu(slug, "services-menu"), area_menu(slug, "areas-menu")]
-    mobile = [service_menu(slug, "services-menu-mobile", start_open=True), area_menu(slug, "areas-menu-mobile")]
+    links = [dropdown_menu(slug, NAV_DROPDOWN_LABEL, NAV_DROPDOWN, "homes-menu")]
+    mobile = [dropdown_menu(slug, NAV_DROPDOWN_LABEL, NAV_DROPDOWN, "homes-menu-mobile", start_open=True)]
     for label, target in NAV:
-        links.append(
-            f'<a href="{href(slug, target)}"{current(slug, target)}>{label}</a>'
-        )
-        mobile.append(
-            f'<a href="{href(slug, target)}"{current(slug, target)}>{label}</a>'
-        )
-    for label, target in MOBILE_EXTRA:
-        mobile.append(
-            f'<a href="{href(slug, target)}"{current(slug, target)}>{label}</a>'
-        )
-    mobile.append(
-        f'<a class="btn btn--nav" href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a>'
-    )
-    mobile.append(
-        f'<a class="btn btn--primary" href="{href(slug, "contact")}">Schedule a Consultation</a>'
-    )
+        item = f'<a class="nav-item" href="{href(slug, target)}"{current(slug, target)}>{label}</a>'
+        links.append(item)
+        mobile.append(item)
+    mobile.append(f'<a class="btn btn--nav" href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a>')
+    mobile.append(f'<a class="btn btn--primary" href="{href(slug, JOURNEY)}">{JOURNEY_LABEL}</a>')
     return f"""<header class="site-nav" id="site-nav">
   <div class="site-nav__inner">
     <a href="{href(slug, "")}" class="site-nav__logo">
@@ -251,7 +234,7 @@ def nav(slug):
     </nav>
     <div class="site-nav__actions">
       <a class="btn btn--nav" href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a>
-      <a class="btn btn--nav-primary" href="{href(slug, "contact")}">Schedule a Consultation</a>
+      <a class="btn btn--nav-primary" href="{href(slug, JOURNEY)}">{JOURNEY_LABEL}</a>
     </div>
     <button class="site-nav__toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav__mobile">
       <span class="site-nav__toggle-icon" aria-hidden="true"><span></span><span></span><span></span></span>
@@ -264,63 +247,57 @@ def nav(slug):
 </header>
 <div class="sticky-cta" id="sticky-cta">
   <p>Ready to talk about your project?</p>
-  <a href="tel:{PHONE_TEL}" class="btn btn--sticky">Call {PHONE_DISPLAY}</a>
+  <div class="sticky-cta__actions">
+    <a href="tel:{PHONE_TEL}" class="btn btn--sticky-call">Call</a>
+    <a href="{href(slug, JOURNEY)}" class="btn btn--sticky">{JOURNEY_LABEL}</a>
+  </div>
 </div>
 """
 
 
+FOOTER_LINKS = [
+    ("Custom Homes", "services/custom-home-build"),
+    ("Guest Houses &amp; ADUs", "services/custom-adu"),
+    ("Luxury Remodels", "services/whole-home-remodel"),
+    ("Portfolio", "projects"),
+    ("Our Process", "our-process"),
+    ("About", "about"),
+    ("Planning Guide", "planning-guide"),
+    ("Partners", "partners"),
+    ("Start Your Journey", JOURNEY),
+    ("Privacy", "privacy-policy"),
+    ("Opt-out preferences", "opt-out-preferences"),
+]
+
+
+def where_we_build_html(slug, sep=" · "):
+    named = [city_anchor(slug, name) for name in WHERE_WE_BUILD]
+    return sep.join(named) + ", and across the Coachella Valley and High Desert."
+
+
 def footer(slug):
     p = prefix(slug)
-    cols_services = [
-        ("Custom home build", "services/custom-home-build"),
-        ("Whole-home remodel", "services/whole-home-remodel"),
-        ("Custom ADU", "services/custom-adu"),
-        ("All services", "services"),
-        ("Remodels", "services/remodels"),
-    ]
-    cols_company = [
-        ("About", "about"),
-        ("Projects", "projects"),
-        ("Best general contractor", "remodels"),
-        ("Contact", "contact"),
-        ("Planning guide", "planning-guide"),
-        ("Partners", "partners"),
-        ("Privacy policy", "privacy-policy"),
-        ("Opt-out preferences", "opt-out-preferences"),
-    ]
-    def nav_list(items):
-        return "".join(
-            f'<a href="{href(slug, t)}">{label}</a>' for label, t in items
-        )
-    named = [city_anchor(slug, name) for name in AREAS]
-    areas = ", ".join(named[:-1]) + ", and " + named[-1]
+    links = "".join(f'<a href="{href(slug, t)}">{label}</a>' for label, t in FOOTER_LINKS)
     return f"""<footer class="site-footer">
   <div class="site-footer__inner">
     <div class="site-footer__cols">
       <div>
-        <img class="site-footer__logo" src="{p}images/site/distinct-web-white-300x112.png" alt="Distinct Designs Construction" width="300" height="112">
-        <p class="site-footer__brand">Distinct Designs Construction</p>
-        <p>Joshua Tree, CA</p>
-        <p><a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a></p>
-        <p><a href="mailto:{EMAIL}">{EMAIL}</a></p>
-        <p>Licensed, bonded, and insured.</p>
+        <img class="site-footer__logo" src="{p}images/site/distinct-web-white-300x112.png" alt="Distinct Designs Construction" width="300" height="112" loading="lazy">
+        <p class="site-footer__brand site-footer__company">{COMPANY_LINE}</p>
+        <p>{LOCATION} · <a href="tel:{PHONE_TEL}">{PHONE_DISPLAY}</a> · <a href="mailto:{EMAIL}">{EMAIL}</a></p>
         <p><a href="https://www.instagram.com/distinctdesignsconst/">Instagram</a> · <a href="https://www.facebook.com/profile.php?id=61561101665757">Facebook</a> · <a href="https://www.yelp.com/biz/distinct-designs-yucca-valley-6">Yelp</a></p>
       </div>
       <div>
-        <h2>Services</h2>
-        <nav aria-label="Services">{nav_list(cols_services)}</nav>
+        <h2>Explore</h2>
+        <nav aria-label="Footer">{links}</nav>
       </div>
       <div>
-        <h2>Company</h2>
-        <nav aria-label="Company">{nav_list(cols_company)}</nav>
-      </div>
-      <div>
-        <h2>Service areas</h2>
-        <p>{areas}. For the right project, also greater Southern California.</p>
+        <h2>Where we build</h2>
+        <p>{where_we_build_html(slug)}</p>
       </div>
     </div>
   </div>
-  <p class="site-footer__legal">&copy; <span id="year"></span> Distinct Designs Construction. All rights reserved.</p>
+  <p class="site-footer__legal">&copy; <span id="year"></span> Distinct Designs Construction. All rights reserved. CA Lic. #1145786.</p>
 </footer>
 <dialog class="lightbox" id="lightbox" aria-label="Enlarged project photograph">
   <button class="lightbox__close" id="lightbox-close" type="button" aria-label="Close">&times;</button>
@@ -335,23 +312,49 @@ def footer(slug):
 """
 
 
-def hero(slug, image, alt, width, height, srcset, eyebrow, h1, sub, primary_href, primary_label, page=False):
+def ph(note):
+    """Placeholder-photo marker. Renders a tiny corner tag via one CSS rule
+    ([data-placeholder-photo]::before). Remove the attribute, or that rule,
+    to turn the tags off. The note says what the final photo should be."""
+    return f' data-placeholder-photo="{note}"' if note else ""
+
+
+def ph_comment(note):
+    return f"\n<!-- TODO(v2) PLACEHOLDER PHOTO: {note} -->" if note else ""
+
+
+def hero(slug, image, alt, width, height, srcset, eyebrow, h1, sub, primary_href, primary_label, page=False, placeholder="", extra=""):
     p = prefix(slug)
     klass = "hero hero--page" if page else "hero"
     srcset_attr = f'\n      srcset="{srcset}"\n      sizes="100vw"' if srcset else ""
-    priority = "high" if not page else "auto"
-    loading = "" if not page else ' loading="eager"'
-    return f"""<header class="{klass}">
-  <img class="hero__image" src="{p}{image}"{srcset_attr} alt="{alt}" width="{width}" height="{height}" fetchpriority="{priority}"{loading}>
+    sub_html = f'\n    <p class="subhead">{sub}</p>' if sub else ""
+    return f"""{ph_comment(placeholder)}
+<header class="{klass}"{ph(placeholder)}>
+  <img class="hero__image" src="{p}{image}"{srcset_attr} alt="{alt}" width="{width}" height="{height}" fetchpriority="high" loading="eager">
   <div class="hero__scrim" aria-hidden="true"></div>
   <div class="hero__content reveal">
     <p class="eyebrow">{eyebrow}</p>
-    <h1>{h1}</h1>
-    <p class="subhead">{sub}</p>
+    <h1>{h1}</h1>{sub_html}
     <nav class="hero-cta" aria-label="Hero">
       <a href="tel:{PHONE_TEL}" class="btn btn--secondary">Call {PHONE_DISPLAY}</a>
       <a href="{primary_href}" class="btn btn--primary">{primary_label}</a>
-    </nav>
+    </nav>{extra}
+  </div>
+</header>
+"""
+
+
+def page_hero(slug, image, alt, width, height, eyebrow, h1, sub="", placeholder="", klass=""):
+    """Inner-page hero without buttons."""
+    p = prefix(slug)
+    sub_html = f'\n    <p class="subhead">{sub}</p>' if sub else ""
+    return f"""{ph_comment(placeholder)}
+<header class="hero hero--page{(" " + klass) if klass else ""}"{ph(placeholder)}>
+  <img class="hero__image" src="{p}{image}" alt="{alt}" width="{width}" height="{height}" fetchpriority="high" loading="eager">
+  <div class="hero__scrim" aria-hidden="true"></div>
+  <div class="hero__content reveal">
+    <p class="eyebrow">{eyebrow}</p>
+    <h1>{h1}</h1>{sub_html}
   </div>
 </header>
 """
@@ -375,12 +378,29 @@ def quotes_html(items):
     return '<div class="testimonial-stack reveal">' + "".join(blocks) + "</div>"
 
 
-HOME_QUOTES = [
-    ("Nick and team went above and beyond! Great attention to detail and excellent communication.", "Jessica &amp; Laura Myers"),
-    ("Nick and everyone on his team are just simply the best. He gave us a magical bathroom and also helped out with new wood-trimmed windows and doors. Everyone was super kind, super fast, and really skilled. Nick's passion for his job shows, and it made the process really personal and fun. So happy with the results!", "Victoria Lynn Carroll"),
-    ("Nick and his crew were very professional, always on time to the job site, respectable of the house, and cleaned up after themselves. Nick built a covered patio for me. It came out amazing and fair price too. I highly recommend Nick for any general construction.", "Troy Gatchell"),
-    ("Nick and his crew were by far the best contractors I have worked with out here in Yucca Valley/Landers.", "Katie Lee"),
-]
+def google_badge():
+    return f"""<!-- TODO(v2): confirm the Google Business Profile link and the live rating before launch. -->
+<p class="google-badge"><a href="{GBP_URL}" rel="noopener" target="_blank"><span class="google-badge__stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span> {GBP_RATING} on Google · Read every review</a></p>"""
+
+
+def reviews_section(items, tinted=True, section_id="testimonials"):
+    """Step 12: "What clients and partners say", three reviews at most."""
+    assert len(items) <= 3
+    klass = "section section--tinted" if tinted else "section"
+    return f"""<section class="{klass}" id="{section_id}">
+  <h2>What clients and partners say</h2>
+  {quotes_html(items)}
+  {google_badge()}
+</section>"""
+
+
+# Reviews (Step 12). Kept verbatim. Troy Gatchell's review stays on Google only.
+Q_MYERS = ("Nick and team went above and beyond! Great attention to detail and excellent communication.", "Jessica &amp; Laura Myers")
+Q_KATIE = ("Nick and his crew were by far the best contractors I have worked with out here in Yucca Valley/Landers.", "Katie Lee")
+Q_VICTORIA = ("Nick and everyone on his team are just simply the best. He gave us a magical bathroom and also helped out with new wood-trimmed windows and doors. Everyone was super kind, super fast, and really skilled. Nick's passion for his job shows, and it made the process really personal and fun. So happy with the results!", "Victoria Lynn Carroll")
+Q_BENOIT = ("A complete remodel in Joshua Tree. Professional, detail-oriented, delivered on time and on budget.", "Benoit R. · Joshua Tree")
+
+HOME_QUOTES = [Q_MYERS, Q_KATIE]
 
 GUIDE_QUOTES = [
     ("A full down to the studs remodel finished on time and on budget, accessible the whole way, prompt with every update.", "Ken Z. · Whole-Home Remodel"),
@@ -388,91 +408,110 @@ GUIDE_QUOTES = [
     ("Called about our remodel and Nick came to the house the same day and communicated with us every step.", "Hannah S. · Remodel"),
 ]
 
+INSURED_ANSWER = "Yes, we carry general liability and workers' comp insurance. Distinct Designs Construction is a licensed California contractor, CA Lic. #1145786."
+
+# TODO(v2): build timeline. Kept at 10 to 18 months for now. The brief says to
+# match the Planning Guide; the guide landing pages describe "the real 18-27
+# month timeline" from first conversation to move-in. Confirm with Nick.
+TIMELINE_TODO = "<!-- TODO(v2): match the custom-home timeline to the Planning Guide (guide pages say 18 to 27 months, first conversation to move-in). -->"
+# TODO(v2): out-of-state answer. "We do it regularly" and "many of our most
+# celebrated projects" are left off until Nick confirms they are literally true.
+
 HOME_FAQ = [
     ("What do you specialize in?",
-     "We specialize exclusively in high-end custom construction and luxury renovations across the high desert and greater Southern California region. Our services include Custom Luxury Home Construction, Whole-Home Renovations and Transformations, Designer Kitchen Renovations and Remodels, Luxury Bathroom Renovations, Remodels and Additions, Custom ADU and Guest Suite Construction, and Full-Service Architecture and Engineering Coordination. Every project is handled by our dedicated in-house team from the first consultation to the final walkthrough: no rotating subcontractors, no compromises."),
-    ("Are you licensed, bonded, and insured?",
-     "Yes. Distinct Designs Construction is a fully licensed, bonded, and insured contractor. License #1039394. Your investment and your property are fully protected from day one."),
+     "Luxury custom homes from $1M to $5M+, whole-home remodels from $250K, and guest houses and ADUs on properties that already have a home."),
+    ("Are you licensed and insured?", INSURED_ANSWER),
     ("How do you handle budgets and prevent cost overruns?",
-     "Before a single shovel breaks ground we conduct a thorough pre-construction design-to-budget matching process. Every material selection, design detail, and architectural decision is carefully evaluated and priced upfront so you have a clear and accurate picture of your total investment from day one. No mid-build surprises, no forced compromises, and no uncomfortable conversations about costs that should have been addressed from the start. If an element of the design needs to be reconsidered we identify it early and present alternatives that meet the same standard, before you have committed to it."),
+     "Before construction begins, every material selection, design detail, and architectural decision is priced against your budget. The decisions that move cost get made on paper, not on the job site. If an element of the design needs to be reconsidered, we identify it early and present alternatives that meet the same standard, before you have committed to it."),
     ("How do you keep clients informed throughout the build?",
-     "Communication is one of our most important commitments to every client. You receive real-time photo updates through our client portal powered by CompanyCam plus detailed bi-weekly field reports so you always know exactly where your project stands. When you reach out you hear back the same day, directly from leadership or your dedicated project manager, not a receptionist or voicemail box. Text, email, or phone call: we are always accessible. You will never feel out of the loop on your own project."),
+     "You receive real-time photo updates through your client portal, plus detailed bi-weekly field reports, so you always know where your project stands. When you reach out, you hear back the same day, directly from leadership or your dedicated project manager, not a receptionist or voicemail box. Text, email, or phone call: we are always accessible."),
     ("Do you work with architects and interior designers?",
-     "Absolutely. We have longstanding relationships with top architects, designers, and realtors throughout the high desert and greater Southern California region. We are experienced at bringing precise design visions to life without ever compromising the intent, and our trusted partners regularly refer their most discerning clients to us because they know the work will be executed with the same level of care and precision they put into their own. When your architect, designer, and builder operate in true partnership the vision actually gets built exactly as intended."),
+     "Absolutely. We have longstanding relationships with architects, designers, and realtors across the Coachella Valley and High Desert. We bring precise design visions to life without compromising the intent, and our partners refer their clients to us because they know the work will be executed with the same care they put into their own. When your architect, designer, and builder work as true partners, the vision gets built as intended."),
     ("What does your pre-construction process look like?",
-     "Before we break ground we invest significant time in the pre-construction phase because we believe the work done before construction begins is what separates a smooth build from a stressful one. This includes a thorough consultation to understand your vision, lifestyle, and budget, complete design-to-budget matching to ensure everything is aligned before any commitments are made, full coordination with your architect or designer, permitting and approval management, and a detailed project timeline so you know exactly what to expect and when. You move forward with complete confidence knowing every dollar has been accounted for and every detail has been planned with purpose."),
+     "Most of what protects your budget happens before the first shovel. After a phone consultation and a site visit, the Design &amp; Pre-Construction Agreement is a paid planning phase before any construction contract: we coordinate your architect and engineers, analyze the site, manage permitting and approvals, and price every major decision against your budget. You then receive one overall price to build, with separate allowances for the materials you select."),
     ("How long does a custom home build or full remodel typically take?",
-     "Every project is unique and timelines vary based on scope, size, and complexity. A full custom home build typically ranges from 10 to 18 months depending on design, permitting, and finish selections. A full home remodel can range from 2 to 6 months. What sets us apart is not just the timeline we give you. It is how we protect it. Our pre-construction process, dedicated crew, and proactive communication system are all specifically designed to prevent the delays that derail most builds. You will always know where your project stands and why."),
+     "Every project is unique and timelines vary based on scope, size, and complexity. A full custom home build typically ranges from 10 to 18 months depending on design, permitting, and finish selections. A full home remodel can range from 2 to 6 months. Our pre-construction process, dedicated crew, and proactive communication are all designed to prevent the delays that derail most builds, and you will always know where your project stands and why."),
     ("Can you manage my project if I live out of state or travel frequently?",
-     "Yes and we do it regularly. Our client portal provides real-time photo updates, our bi-weekly field reports keep you fully informed, and we offer scheduled video calls throughout the build so you always feel completely in control without needing to be on site. We act as your eyes and ears on the ground so you never have to wonder what is happening with your investment. Many of our most successful and celebrated projects have been built for out-of-state clients who trusted our process and never once felt out of the loop."),
+     "Yes. Your client portal provides real-time photo updates, bi-weekly field reports keep you informed, and we schedule video calls throughout the build, so you can follow every stage without needing to be on site. We act as your eyes and ears on the ground."),
     ("What makes Distinct Designs Construction different from other contractors?",
-     "Several things set us apart and none of them are accidental. We bring the same dedicated crew from day one to move-in day: no rotating strangers on your job site. We match your design to your budget before we ever break ground so there are no costly surprises mid-build. You have direct access to leadership on every project, not an assistant, not a call center. Our job sites are kept clean, organized, and fully protected throughout every phase of construction. And when something unexpected comes up, because in construction something always does, we are already handling it before you even knew there was a problem. We don't just build homes. We protect your investment and deliver something you will be proud of for decades."),
+     "Our in-house crew and the same vetted trade partners work on every job, from groundbreaking to keys. Every decision is planned and priced before groundbreaking. You have direct access to leadership on every project, not an assistant or a call center. Our job sites are kept clean, organized, and protected through every phase. And when something unexpected comes up, because in construction something always does, we bring it to you early, with options. We don't just build homes. We protect your investment and deliver something you will be proud of for decades."),
     ("Do you handle permits and inspections?",
-     "Yes. We manage the entire permitting and inspection process on your behalf from plan approvals through certificates of occupancy. You never have to chase down paperwork, navigate local bureaucracy, or follow up with city offices on your own. This is especially valuable for first-time luxury builders and out-of-state clients who need a builder they can fully trust to manage every detail of the process, not just the construction itself."),
+     "Yes. We manage the entire permitting and inspection process on your behalf, from plan approvals through certificates of occupancy. You never have to chase paperwork, navigate local offices, or follow up with the city on your own, which matters most for first-time builders and out-of-state clients."),
     ("How is my investment protected throughout the project?",
-     "Financial transparency is a core part of how we operate. Every dollar is tied directly to a project milestone so you always know what you are paying for and why. We provide detailed documentation for every phase of your build, we never ask for funds beyond what the current scope requires, and our pre-construction budget matching process ensures your investment is fully accounted for before work ever begins. You will never be caught off guard financially on a Distinct Designs project."),
+     "Financial transparency is a core part of how we operate. Payments are tied to project milestones, so you always know what you are paying for and why. We provide detailed documentation for every phase, we never ask for funds beyond what the current scope requires, and every major decision is priced against your budget before work begins."),
     ("Do you offer post-construction support after the project is complete?",
-     "Yes and this is one of the things that truly separates us from virtually every other builder in the region. Our post-construction concierge service ensures that when we hand over the keys the only thing left behind is the home itself. This includes a full deep clean and site preparation, complete punch list management and coordination, subcontractor follow-up for warranties and certificates of occupancy, utility activation and smart home system setup, appliance registration, and a complete documentation package including warranties, manuals, as-built drawings, and maintenance schedules. Your home is not finished until everything works exactly as it should and you are completely taken care of."),
+     "Yes. When we hand over the keys, the only thing left behind is the home itself. That includes a full deep clean, punch list management, subcontractor follow-up for warranties and certificates of occupancy, utility activation and smart home setup, appliance registration, and a complete documentation package with warranties, manuals, as-built drawings, and maintenance schedules."),
     ("What areas do you serve?",
-     "We proudly serve the entire high desert and Coachella Valley region including Joshua Tree, Yucca Valley, Twentynine Palms, Palm Springs, Pioneer Town, Landers, Morongo Valley, Desert Hot Springs, Palm Desert, Rancho Mirage, Indian Wells, Indio, La Quinta and Cathedral City. For the right project we are also available for builds throughout greater Southern California."),
+     "The Coachella Valley and High Desert, including Palm Springs, Rancho Mirage, Palm Desert, Indian Wells, La Quinta, Yucca Valley, and Joshua Tree."),
 ]
 
 BUILD_FAQ = [
     ("How long does a custom home build take?",
      "Typically 10 to 18 months, depending on design, permitting, and finish selections. Our pre-construction process and dedicated crew are built to protect that timeline, not just estimate it."),
     ("Can you manage my project if I live out of state?",
-     "Yes, regularly. Your client portal gives you real-time photo updates, you get bi-weekly field reports, and we schedule video calls throughout the build. Many of our most successful projects have been built for out-of-state clients who never once felt out of the loop."),
+     "Yes. Your client portal gives you real-time photo updates, you get bi-weekly field reports, and we schedule video calls throughout the build."),
     ("Do you handle permits and inspections?",
      "Yes, the entire process, from plan approvals through certificates of occupancy. You never chase paperwork or navigate city offices yourself."),
-    ("Are you licensed, bonded, and insured?",
-     "Yes. Distinct Designs Construction is fully licensed, bonded, and insured. License #1145786."),
+    ("Are you licensed and insured?", INSURED_ANSWER),
     ("How is my investment protected?",
-     "Every dollar is tied to a project milestone, with detailed documentation at every phase. We never request funds beyond what the current scope requires, and our design-to-budget matching process means your total investment is accounted for before work ever begins."),
+     "Payments are tied to project milestones, with detailed documentation at every phase. We never request funds beyond what the current scope requires, and every material, design detail, and architectural decision is priced against your budget before construction begins."),
 ]
 
 REMODEL_FAQ = [
     ("How long does a full home remodel take?",
      "Typically 2 to 6 months, depending on scope and finish selections. Our pre-construction process is built to protect that timeline, not just estimate it."),
     ("Can you manage my remodel if I live out of state?",
-     "Yes, regularly. Real-time photo updates, bi-weekly field reports, and scheduled video calls keep you fully informed without needing to be on site."),
+     "Yes. Real-time photo updates through your client portal, bi-weekly field reports, and scheduled video calls keep you informed without needing to be on site."),
     ("Do you handle permits and inspections?",
      "Yes, the entire process, from plan approvals through certificates of occupancy."),
-    ("Are you licensed, bonded, and insured?",
-     "Yes. License #1145786, fully licensed, bonded, and insured."),
+    ("Are you licensed and insured?", INSURED_ANSWER),
     ("How is my investment protected during the remodel?",
-     "Every dollar is tied to a project milestone with full documentation. We never request funds beyond what the current scope requires."),
+     "Payments are tied to project milestones with full documentation, and every decision is priced before the first wall comes down. We never request funds beyond what the current scope requires."),
 ]
 
 ADU_FAQ = [
-    ("How long does an ADU build typically take?",
+    ("How long does a guest house or ADU build typically take?",
      "Timelines vary by size and scope, but our pre-construction process is designed to protect your timeline from the delays that derail most ADU projects."),
-    ("Can you manage my ADU project if I live out of state?",
-     "Yes. Real-time photo updates, bi-weekly reports, and scheduled video calls keep you informed throughout."),
+    ("Can you manage my guest house project if I live out of state?",
+     "Yes. Real-time photo updates through your client portal, bi-weekly reports, and scheduled video calls keep you informed throughout."),
     ("Do you handle permits for ADUs?",
-     "Yes, the full process, from plan approval through certificate of occupancy."),
-    ("Are you licensed, bonded, and insured?",
-     "Yes. License #1145786."),
+     "Yes, the full process, from plan approval through certificate of occupancy, including utility connections."),
+    ("Are you licensed and insured?", INSURED_ANSWER),
     ("How is my investment protected?",
-     "Every dollar is tied to a milestone, with full documentation and no requests beyond the current scope."),
+     "Payments are tied to milestones, with full documentation and no requests beyond the current scope. Every decision is planned and priced before we start."),
 ]
 
 
-def project_tiles(slug):
+PROJECTS = {
+    "cubero": ("projects/cubero", "images/project-cubero.webp", "Cubero ground-up custom home from above, with pool and desert landscape", 900, 675, "Cubero", "Ground-up custom home"),
+    "alturas": ("projects/alturas", "images/project-alturas.webp", "Alturas custom home in progress: sheathed walls with a circular window opening, against the desert and mountains", 1400, 932, "Alturas", "Now building"),
+    "hilltop": ("projects/hilltop", "images/site/hilltop-01-2.webp", "Hilltop terrace at dusk with a fire bowl, string lights and a spa, valley lights beyond", 1440, 1080, "Hilltop", "Rescue and completion"),
+    "la-mirada": ("projects/la-mirada", "images/project-la-mirada.webp", "La Mirada renovation: open-plan kitchen and living area with marble island, brass pendants and oak floors", 900, 1200, "La Mirada", "Luxury renovation"),
+}
+
+
+def project_tiles(slug, keys, labels=None, placeholders=None):
+    """Linked project tiles. keys picks projects; labels overrides the tile text."""
     p = prefix(slug)
-    tiles = [
-        ("projects/la-mirada", "images/project-la-mirada.webp", "La Mirada Remodel: open-plan kitchen and living area with marble island, brass pendants and oak floors", 900, 1200, "La Mirada Remodel", "Luxury renovation"),
-        ("projects/hilltop", "images/project-hilltop.webp", "Hilltop Build: open-plan living and kitchen with stone feature wall, opening to the desert", 900, 675, "Hilltop Build", "Rescue and completion"),
-        ("projects/cubero", "images/project-cubero.webp", "Cubero Build: desert modern home from above, with pool and Joshua tree landscape", 900, 675, "Cubero Build", "Ground-up custom home"),
-        ("projects/alturas", "images/project-alturas.webp", "Alturas Build in progress: sheathed walls with a circular window opening, against the desert and mountains", 1400, 932, "Alturas Build", "Currently in progress"),
-    ]
-    html_bits = []
-    for i, (target, img, alt, w, h, name, note) in enumerate(tiles):
-        tall = " project-tile--tall" if i == 0 else ""
-        html_bits.append(f"""<a class="project-tile project-tile--link{tall}" href="{href(slug, target)}">
+    labels = labels or {}
+    placeholders = placeholders or {}
+    bits = []
+    for key in keys:
+        target, img, alt, w, h, name, note = PROJECTS[key]
+        title, sub = labels.get(key, (name, note))
+        bits.append(f"""<a class="project-tile project-tile--link" href="{href(slug, target)}"{ph(placeholders.get(key, ""))}>
   <img src="{p}{img}" alt="{alt}" width="{w}" height="{h}" loading="lazy">
-  <span class="project-tile__label">{name} <em>{note}</em></span>
+  <span class="project-tile__label">{title} <em>{sub}</em></span>
 </a>""")
-    return '<div class="projects-grid reveal">' + "".join(html_bits) + "</div>"
+    count = {1: "one", 2: "two", 3: "three"}.get(len(keys), "")
+    mod = f" projects-grid--{count}" if count else ""
+    return f'<div class="projects-grid{mod} reveal">' + "".join(bits) + "</div>"
+
+
+def town_links(slug):
+    """Step 3/4/5: "Where we build" town links. No town in the heading."""
+    items = "".join(f"<li>{city_anchor(slug, c)}</li>" for c in WHERE_WE_BUILD)
+    return f'<ul class="town-links">{items}</ul><p class="page-intro" style="margin-top:1rem">And across the Coachella Valley and High Desert.</p>'
 
 
 def city_anchor(slug, name):
@@ -488,16 +527,9 @@ def city_anchor(slug, name):
     return f'<a class="city-link" href="{href(slug, target)}"{here}>{name}</a>'
 
 
-def areas_html(slug=""):
-    def col(title, cities):
-        items = "".join(f"<li>{city_anchor(slug, c)}</li>" for c in cities)
-        return f"<div><h3>{title}</h3><ul class=\"areas-list\">{items}</ul></div>"
-    return f'<div class="areas-grid reveal">{col("Primary", PRIMARY)}{col("Also served", SECONDARY)}</div>'
-
-
 # Longest names first. "Joshua Tree Rustic" is a finish style, not the city.
 _CITY_RE = re.compile(
-    r"\b(Indian Wells|Palm Springs|Palm Desert|Yucca Valley|Joshua Tree|La Quinta)\b(?! Rustic)"
+    r"\b(Rancho Mirage|Indian Wells|Palm Springs|Palm Desert|Yucca Valley|Joshua Tree|La Quinta)\b(?! Rustic| National Park)"
 )
 # A city followed by ", CA" is the business locality (eyebrow, footer,
 # contact address), not a service-area mention. "serves Joshua Tree, CA"
@@ -609,7 +641,7 @@ def form_embed(form_id, title):
 </div>"""
 
 
-def gallery(slug, images, caption_prefix):
+def gallery(slug, images, caption_prefix, placeholder=""):
     p = prefix(slug)
     bits = []
     for i, (fn, w, h) in enumerate(images, 1):
@@ -617,10 +649,17 @@ def gallery(slug, images, caption_prefix):
         bits.append(f"""<button class="gallery-item" type="button" data-caption="{alt}">
   <img src="{p}images/site/{fn}" alt="{alt}" width="{w}" height="{h}" loading="lazy">
 </button>""")
-    return '<div class="gallery-grid reveal">' + "".join(bits) + "</div>"
+    return ph_comment(placeholder) + f'<div class="gallery-grid reveal"{ph(placeholder)}>' + "".join(bits) + "</div>"
+
+
+PAGES_WRITTEN = []
+# Kept out of sitemap.xml: ad landing pages (mirrors of the LP hub), thank-you
+# and agreement pages.
+SITEMAP_EXCLUDE = ("guides/", "guide-thank-you", "partners/referral-agreement", "opt-out-preferences")
 
 
 def write_page(slug, html):
+    PAGES_WRITTEN.append(slug)
     html = link_cities(html, slug)
     if slug:
         path = ROOT.joinpath(*[p for p in slug.split("/") if p], "index.html")
@@ -642,30 +681,31 @@ def page_shell(slug, title, description, body, extra_ld=""):
     return html
 
 
-def why_cards(items):
+def why_cards(items, reveal=False):
     bits = []
     for h, text in items:
         bits.append(f'<article class="why-us-card"><h3>{h}</h3><p>{text}</p></article>')
-    return '<div class="why-us-grid reveal">' + "".join(bits) + "</div>"
+    return f'<div class="why-us-grid{" reveal" if reveal else ""}">' + "".join(bits) + "</div>"
 
 
+# The four standards (Step 9/10), from the Yucca Valley page, updated per Step 2.
 WHY_BUILD = [
-    ("One crew, start to finish.", "No rotating strangers on your job site. The same team that breaks ground is the team that hands you the keys."),
-    ("One price, not a maze of line items.", "Your proposal is delivered as a single price to build, with clear allowances for the materials you select, never a confusing trade-by-trade breakdown."),
+    ("One crew, start to finish.", "Our in-house crew and the same vetted trade partners on every job. The team that breaks ground is the team that hands you the keys."),
+    ("One price, not a maze of line items.", "Your proposal is one overall price to build, with separate allowances for the materials you select, never a confusing trade-by-trade breakdown."),
     ("Direct access to leadership.", "When you call, you hear back the same day, from Nick or your dedicated project manager, never a receptionist or voicemail box."),
-    ("Third-generation craftsmanship, 18 years in the desert.", "Built on standards passed down and refined over three generations, backed by nearly two decades of licensed work across the High Desert and Coachella Valley."),
+    ("Third-generation craftsmanship.", "18 years in the desert, 100+ years of combined experience on our crew, and standards passed down over three generations."),
 ]
 WHY_REMODEL = [
-    ("One crew, start to finish.", "No rotating strangers walking through your home. The same team that starts the job finishes it."),
-    ("One price, not a maze of line items.", "Your proposal is a single price to build, with clear allowances for the finishes you choose, never a confusing trade-by-trade breakdown."),
+    ("One crew, start to finish.", "Our in-house crew and the same vetted trade partners on every job. The team that starts your remodel finishes it."),
+    ("One price, not a maze of line items.", "One overall price to build, with separate allowances for the finishes you choose, never a confusing trade-by-trade breakdown."),
     ("Direct access to leadership.", "Reach out and hear back the same day, from Nick or your dedicated project manager, never a call center."),
-    ("Third-generation craftsmanship, 18 years in the desert.", "Standards passed down over three generations, backed by nearly two decades of licensed work across the region."),
+    ("Third-generation craftsmanship.", "18 years in the desert, 100+ years of combined experience on our crew, and standards passed down over three generations."),
 ]
 WHY_ADU = [
-    ("One crew, start to finish.", "The same team from groundbreaking to final walkthrough. No rotating subcontractors."),
-    ("One price, not a maze of line items.", "A single price to build, with clear allowances for your material selections."),
+    ("One crew, start to finish.", "Our in-house crew and the same vetted trade partners, from groundbreaking to final walkthrough."),
+    ("One price, not a maze of line items.", "One overall price to build, with separate allowances for your material selections."),
     ("Direct access to leadership.", "Same-day responses from Nick or your dedicated project manager."),
-    ("Third-generation craftsmanship, 18 years in the desert.", "The same standards we apply to $5M homes, applied to your ADU."),
+    ("Third-generation craftsmanship.", "18 years in the desert and 100+ years of combined experience, applied to your guest house the same way we apply it to a $5M home."),
 ]
 
 
@@ -679,39 +719,53 @@ def steps(items):
     return '<ol class="process-steps">' + "".join(bits) + "</ol>"
 
 
+# Step 8: the six steps, full text (Our Process page and service pages).
 PROCESS = [
-    ("Consultation", "We learn your vision, lifestyle, and budget in detail."),
-    ("Design-to-budget matching", "Every choice is priced and aligned before you commit to anything."),
-    ("Permitting and engineering coordination", "We manage architects, engineers, and the entire approval process."),
-    ("Build", "The same dedicated crew, start to finish. No rotating subcontractors."),
-    ("Daily transparency", "Real-time photo updates through your client portal, plus bi-weekly field reports."),
+    ("Phone consultation", "We talk through your vision, property, timeline, and budget. If we're not the right fit, we'll tell you."),
+    ("Site visit", "We walk the lot or the home with you: access, utilities, setbacks, and anything that will drive cost."),
+    ("Design &amp; Pre-Construction Agreement", "A paid planning phase before any construction contract. We coordinate your architect and engineers and design, analyze the site, and price every major decision against your budget. This is where the Alturas and Cubero savings came from."),
+    ("Your proposal", "One overall price to build, with separate allowances for the materials you select."),
+    ("Build", "Our in-house crew and the same vetted trade partners on every job, with real-time photo updates through your client portal and bi-weekly field reports."),
+    ("Keys and after", "Punch list, final clean, warranties, manuals, and documentation handed over together."),
 ]
-PROCESS_REMODEL = [
-    ("Consultation", "We walk the space and understand your vision, lifestyle, and budget."),
-    ("Design-to-budget matching", "Every selection is priced and aligned before you commit."),
-    ("Permitting and coordination", "We manage architects, designers, and approvals for you."),
-    ("Build", "The same dedicated crew from demo to final walkthrough. No rotating subs."),
-    ("Daily transparency", "Real-time photo updates through your client portal, plus bi-weekly field reports."),
+# One line each, for the homepage (Step 4).
+PROCESS_SHORT = [
+    ("Phone consultation", "Your vision, property, timeline, and budget, and an honest answer on fit."),
+    ("Site visit", "We walk the lot or home: access, utilities, setbacks, and cost drivers."),
+    ("Design &amp; Pre-Construction Agreement", "A paid planning phase that prices every major decision before any construction contract."),
+    ("Your proposal", "One overall price to build, with separate allowances for your selections."),
+    ("Build", "Our in-house crew and vetted trade partners, with updates through your client portal."),
+    ("Keys and after", "Punch list, final clean, warranties, manuals, and documentation, handed over together."),
 ]
-PROCESS_ADU = [
-    ("Consultation", "We assess your lot, vision, and budget."),
-    ("Design-to-budget matching", "Every selection priced and aligned upfront."),
-    ("Permitting and coordination", "We manage the full approval and utility process."),
-    ("Build", "One dedicated crew, start to finish."),
-    ("Daily transparency", "Real-time photo updates and bi-weekly field reports."),
-]
+PROCESS_REMODEL = PROCESS
+PROCESS_ADU = PROCESS
 
 
-def related(slug, links):
+def related(slug, links, primary_last=True):
     bits = []
-    for label, target in links:
-        bits.append(f'<a class="btn btn--nav" href="{href(slug, target)}">{label}</a>')
+    for i, (label, target) in enumerate(links):
+        klass = "btn btn--primary" if (primary_last and i == len(links) - 1 and target == JOURNEY) else "btn btn--nav"
+        bits.append(f'<a class="{klass}" href="{href(slug, target)}">{label}</a>')
     return '<div class="link-row">' + "".join(bits) + "</div>"
+
+
+def write_sitemap():
+    urls = []
+    for slug in PAGES_WRITTEN:
+        if any(slug.startswith(x) for x in SITEMAP_EXCLUDE):
+            continue
+        urls.append(f"  <url><loc>{canonical(slug)}</loc></url>")
+    xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(urls) + "\n</urlset>\n"
+    (ROOT / "sitemap.xml").write_text(xml, encoding="utf-8")
+    print("sitemap.xml", len(urls), "urls")
 
 
 def main():
     import pages
     pages.build_all()
+    # pages imports this file as the module "generate" (not __main__), so the
+    # list of written pages lives on that module.
+    pages.g.write_sitemap()
 
 
 if __name__ == "__main__":
