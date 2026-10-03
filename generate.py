@@ -607,6 +607,8 @@ class _CityLinker(HTMLParser):
     def _repl(self, match):
         if _is_base_location(match.string, match.start(), match.end()):
             return match.group(0)
+        if AREA_TARGET.get(match.group(1)) == self.slug:
+            return match.group(0)  # no self-links in body copy on the city's own page
         return city_anchor(self.slug, match.group(1))
 
     def result(self):

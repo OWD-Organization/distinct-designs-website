@@ -1748,3 +1748,10 @@ a.city-link {
 .journey-layout h3 { margin-top: var(--space-sm); margin-bottom: 0.15rem; font-size: 1rem; }
 .journey-layout p { margin-bottom: 0; }
 .lightbox__img { height: auto; }
+/* Mobile: the Homes group starts open; keep its label the same color as the other items. */
+.site-nav__mobile .nav-dropdown.is-open .nav-item { color: var(--color-text); }
+.site-nav__mobile .btn { padding: var(--space-2xs) var(--space-sm); font-size: var(--fs-small); }
+/* Tinted sections center each direct child at --content-max; keep prose
+   left-aligned with the heading and limit the line length inside it. */
+.section--tinted > .prose { max-width: var(--content-max); }
+.section--tinted > .prose > * { max-width: 68ch; }
