@@ -299,7 +299,7 @@ def service_build():
 """
     W(slug, S(slug,
               "Luxury Custom Home Builder · Coachella Valley &amp; High Desert · Distinct Designs",
-              "Ground-up luxury custom homes from $1M to $5M+ across the Coachella Valley and High Desert. One team from design to keys, planned and priced before groundbreaking.",
+              "Luxury custom homes from $1M to $5M+ across the Coachella Valley and High Desert. One team from design to keys, planned and priced before groundbreaking.",
               body, LD(g.BUILD_FAQ)))
 
 
@@ -581,7 +581,7 @@ def project_pages():
     case_study(
         "projects/hilltop",
         "Hilltop Rescue and Completion | Distinct Designs",
-        "Hilltop build in the High Desert. Distinct Designs replaced out-of-code electrical and underspanned structural framing after another contractor left with $70,000.",
+        "Hilltop build in the High Desert. We replaced out-of-code electrical and underspanned structural framing after another contractor left with $70,000.",
         "Hilltop – Rescue and Completion",
         "Hilltop photographs",
         "Rescue and completion | Structural and electrical",
@@ -774,7 +774,7 @@ def start_your_journey():
 """
     W(slug, S(slug,
               "Start Your Journey | Distinct Designs Construction",
-              "Start your custom home, whole-home remodel, or guest house project with Distinct Designs Construction. Every inquiry is reviewed personally. Call (760) 221-4290.",
+              "Start your custom home, whole-home remodel, or guest house project with Distinct Designs. Every inquiry is reviewed personally. Call (760) 221-4290.",
               body))
 
 
@@ -1077,7 +1077,7 @@ def partners():
 """
     W(slug, S(slug,
               "Partner Referral Program | Distinct Designs Construction",
-              "Distinct Designs partner program for agents: 2% on the first referred project, 3% on the second, and 4% after that. High Desert and Coachella Valley custom homes and remodels.",
+              "Distinct Designs partner program for agents: 2% on the first referred project, 3% on the second, and 4% after that, for desert custom homes and remodels.",
               body))
 
 

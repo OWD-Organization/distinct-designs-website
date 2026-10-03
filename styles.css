@@ -1747,3 +1747,4 @@ a.city-link {
 }
 .journey-layout h3 { margin-top: var(--space-sm); margin-bottom: 0.15rem; font-size: 1rem; }
 .journey-layout p { margin-bottom: 0; }
+.lightbox__img { height: auto; }

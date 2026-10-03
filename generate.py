@@ -302,7 +302,7 @@ def footer(slug):
 <dialog class="lightbox" id="lightbox" aria-label="Enlarged project photograph">
   <button class="lightbox__close" id="lightbox-close" type="button" aria-label="Close">&times;</button>
   <figure class="lightbox__figure">
-    <img class="lightbox__img" id="lightbox-img" alt="">
+    <img class="lightbox__img" id="lightbox-img" alt="" width="1200" height="900">
     <figcaption class="lightbox__caption" id="lightbox-caption"></figcaption>
   </figure>
 </dialog>
