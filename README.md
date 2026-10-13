@@ -26,7 +26,7 @@ Preview only. Not merged, no domain pointed. Built from "Distinct Designs Websit
 ### v2 open items
 
 - **Build timeline.** FAQ still says 10 to 18 months. The Planning Guide pages say 18 to 27 months (first conversation to move-in). Match them.
-- **Email.** `distinctdesigns360@gmail.com` kept. It must reach Nick directly and sync into GHL. Nick: keep the Gmail or switch to nick@distinctdesignspro.com.
+- **Email.** Switched site-wide to `nick@distinctdesignspro.com` (Nick's professional email, Oct 13 2026).
 - **GHL form (Step 11).** Edit in the GHL builder: new fields, investment bands (custom homes start at $1M, so the first custom-home band should start at $1M), gold submit, notify Nick, tag kitchen/bath leads, update the workflow. The embed here is unchanged.
 - **Leadership.** Project manager and office leadership cards are placeholders (names, titles, headshots).
 - **Google badge.** Confirm the Google Business Profile URL and the live rating.

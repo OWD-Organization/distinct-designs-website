@@ -735,7 +735,6 @@ def start_your_journey():
       <h3>Phone</h3>
       <p><a href="tel:{TEL}">{PHONE}</a></p>
       <h3>Email</h3>
-      <!-- TODO(v2): email must reach Nick directly and sync into GHL. Keep the Gmail or switch to nick@distinctdesignspro.com (Nick to decide). -->
       <p><a href="mailto:{EMAIL}">{EMAIL}</a></p>
       <h3>Location</h3>
       <p>{g.LOCATION}</p>

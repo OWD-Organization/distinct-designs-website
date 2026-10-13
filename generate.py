@@ -16,9 +16,7 @@ ROOT = Path(__file__).resolve().parent
 
 PHONE_DISPLAY = "(760) 221-4290"
 PHONE_TEL = "+17602214290"
-# TODO(v2): Email must reach Nick directly and sync into GHL. Nick to decide:
-# keep this Gmail or switch to nick@distinctdesignspro.com.
-EMAIL = "distinctdesigns360@gmail.com"
+EMAIL = "nick@distinctdesignspro.com"
 
 # Production origin for canonicals, OG and the sitemap. Previews stay noindexed.
 SITE_URL = "https://distinctdesignsconstruction.com"
