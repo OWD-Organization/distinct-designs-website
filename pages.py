@@ -819,7 +819,7 @@ def contact():
 """
     W(slug, S(slug,
               "Contact Distinct Designs Construction | Joshua Tree, CA",
-              "Call Distinct Designs Construction at (760) 221-4290 or email distinctdesigns360@gmail.com. Joshua Tree, CA. Serving the High Desert and Coachella Valley.",
+              "Call Distinct Designs Construction at (760) 221-4290 or email nick@distinctdesignspro.com. Joshua Tree, CA. Serving the High Desert and Coachella Valley.",
               body))
 
 

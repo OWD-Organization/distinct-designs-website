@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parent
 
 PHONE_DISPLAY = "(760) 221-4290"
 PHONE_TEL = "+17602214290"
-EMAIL = "distinctdesigns360@gmail.com"
+EMAIL = "nick@distinctdesignspro.com"
 
 # Published service area from the current site footer, plus Coachella,
 # which the landing pages list as a city they serve.
