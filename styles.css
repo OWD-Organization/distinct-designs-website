@@ -1061,6 +1061,38 @@ h4 {
   min-height: 1.2em;
 }
 
+/* Contact page: the same lead form on a light section */
+.lead-form--light { grid-template-columns: 1fr 1fr; margin-top: var(--space-sm); }
+.lead-form--light label,
+.lead-form--light legend { color: var(--color-text); }
+.lead-form--light input,
+.lead-form--light textarea {
+  color: var(--color-text);
+  background: #fff;
+  border-color: var(--color-hairline);
+}
+.lead-form--light input:focus,
+.lead-form--light textarea:focus { background: #fff; border-color: var(--color-clay-text); }
+.lead-form--light .lead-form__note { color: var(--color-clay-text); }
+.lead-form__checks { border: 0; padding: 0; margin: 0; gap: var(--space-2xs); }
+.lead-form__checks legend {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: var(--space-2xs);
+}
+.lead-form .lead-form__check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2xs);
+  font-weight: 400;
+  letter-spacing: 0;
+  color: inherit;
+}
+.lead-form .lead-form__check input { width: auto; flex: none; margin-top: 0.3em; accent-color: var(--color-clay-dark); }
+.lead-form__hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+@media (max-width: 600px) { .lead-form--light { grid-template-columns: 1fr; } }
+
 /* -----------------------------------------------------------------
    17. SITE FOOTER
    ----------------------------------------------------------------- */

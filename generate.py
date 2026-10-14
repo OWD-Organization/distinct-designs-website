@@ -7,6 +7,7 @@ Run from the repository root:
 Output is plain HTML. Vercel does not need this script.
 """
 
+import html
 import json
 import re
 from html.parser import HTMLParser
@@ -60,6 +61,8 @@ SECONDARY = [
 
 GUIDE_FORM = "YQYYVz28qqwYJWbc8ZUw"
 CONTACT_FORM = "IbFWLZlZNETBrImKFVjN"
+# The contact page posts straight to this GoHighLevel inbound webhook (CORS is open).
+CONTACT_WEBHOOK = "https://services.leadconnectorhq.com/hooks/M0maz1S3Bhkgiw0ntdG7/webhook-trigger/QwjlLE1PBqCR3eK57ZsZ"
 REFERRAL_FORM = "MyS2TrJSOhTn1mitpihf"
 
 NAV = [

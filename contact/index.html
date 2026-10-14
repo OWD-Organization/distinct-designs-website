@@ -92,9 +92,17 @@
     </div>
     <div>
       <h3>Start your custom home journey now</h3>
-      <div class="form-embed form-embed--contact">
-  <iframe src="https://api.leadconnectorhq.com/widget/form/IbFWLZlZNETBrImKFVjN" title="Contact Distinct Designs Construction" id="inline-IbFWLZlZNETBrImKFVjN" data-layout="{'id':'INLINE'}" data-trigger-type="alwaysShow" data-trigger-value="" data-activation-type="alwaysActivated" data-activation-value="" data-deactivation-type="neverDeactivate" data-deactivation-value="" data-form-name="Contact Distinct Designs Construction" data-height="1280" data-layout-iframe-id="inline-IbFWLZlZNETBrImKFVjN" data-form-id="IbFWLZlZNETBrImKFVjN" scrolling="no"></iframe>
-</div>
+      <form class="lead-form lead-form--light" id="contact-form" data-webhook="https://services.leadconnectorhq.com/hooks/M0maz1S3Bhkgiw0ntdG7/webhook-trigger/QwjlLE1PBqCR3eK57ZsZ" novalidate>
+  <div class="lead-form__row"><label for="cf-first">First name *</label><input id="cf-first" name="first_name" type="text" autocomplete="given-name" required></div>
+  <div class="lead-form__row"><label for="cf-last">Last name *</label><input id="cf-last" name="last_name" type="text" autocomplete="family-name" required></div>
+  <div class="lead-form__row"><label for="cf-phone">Phone *</label><input id="cf-phone" name="phone" type="tel" autocomplete="tel" required></div>
+  <div class="lead-form__row"><label for="cf-email">Email *</label><input id="cf-email" name="email" type="email" autocomplete="email" required></div>
+  <fieldset class="lead-form__row lead-form__row--full lead-form__checks"><legend>Services interested in</legend><label class="lead-form__check"><input type="checkbox" name="services_interest_in" value="High End Custom Luxury Home Construction"> High End Custom Luxury Home Construction</label><label class="lead-form__check"><input type="checkbox" name="services_interest_in" value="Whole-Home Renovations &amp; Transformations"> Whole-Home Renovations &amp; Transformations</label><label class="lead-form__check"><input type="checkbox" name="services_interest_in" value="Designer Kitchen Renovations &amp; Remodels"> Designer Kitchen Renovations &amp; Remodels</label><label class="lead-form__check"><input type="checkbox" name="services_interest_in" value="Luxury Bathroom Renovations, Remodels &amp; Additions"> Luxury Bathroom Renovations, Remodels &amp; Additions</label><label class="lead-form__check"><input type="checkbox" name="services_interest_in" value="Custom ADU &amp; Casita Suite Construction"> Custom ADU &amp; Casita Suite Construction</label><label class="lead-form__check"><input type="checkbox" name="services_interest_in" value="Full-Service Architecture &amp; Engineering Coordination"> Full-Service Architecture &amp; Engineering Coordination</label></fieldset>
+  <div class="lead-form__row lead-form__row--full"><label for="cf-message">Message</label><textarea id="cf-message" name="message" rows="5"></textarea></div>
+  <input class="lead-form__hp" type="text" name="company_website" tabindex="-1" autocomplete="off" aria-hidden="true">
+  <div class="lead-form__row--full"><button class="btn btn--primary" type="submit">Submit</button></div>
+  <p class="lead-form__note lead-form__row--full" id="contact-form-note" role="status" aria-live="polite"></p>
+</form>
     </div>
   </div>
 </section>
@@ -134,6 +142,5 @@
   </figure>
 </dialog>
 <script src="../script.js"></script>
-<script src="https://link.msgsndr.com/js/form_embed.js"></script>
 </body>
 </html>

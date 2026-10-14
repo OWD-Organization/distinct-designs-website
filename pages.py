@@ -21,6 +21,36 @@ TEL = g.PHONE_TEL
 EMAIL = g.EMAIL
 GUIDE = g.GUIDE_FORM
 CONTACT = g.CONTACT_FORM
+CONTACT_WEBHOOK = g.CONTACT_WEBHOOK
+
+# Same choices as the "Services Interest In" field on the GHL contact form.
+SERVICES_INTEREST = [
+    "High End Custom Luxury Home Construction",
+    "Whole-Home Renovations & Transformations",
+    "Designer Kitchen Renovations & Remodels",
+    "Luxury Bathroom Renovations, Remodels & Additions",
+    "Custom ADU & Casita Suite Construction",
+    "Full-Service Architecture & Engineering Coordination",
+]
+
+
+def contact_form():
+    """Native contact form. script.js posts it as JSON to CONTACT_WEBHOOK."""
+    boxes = "".join(
+        f'<label class="lead-form__check"><input type="checkbox" name="services_interest_in" value="{g.html.escape(s)}"> {g.html.escape(s)}</label>'
+        for s in SERVICES_INTEREST
+    )
+    return f"""<form class="lead-form lead-form--light" id="contact-form" data-webhook="{CONTACT_WEBHOOK}" novalidate>
+  <div class="lead-form__row"><label for="cf-first">First name *</label><input id="cf-first" name="first_name" type="text" autocomplete="given-name" required></div>
+  <div class="lead-form__row"><label for="cf-last">Last name *</label><input id="cf-last" name="last_name" type="text" autocomplete="family-name" required></div>
+  <div class="lead-form__row"><label for="cf-phone">Phone *</label><input id="cf-phone" name="phone" type="tel" autocomplete="tel" required></div>
+  <div class="lead-form__row"><label for="cf-email">Email *</label><input id="cf-email" name="email" type="email" autocomplete="email" required></div>
+  <fieldset class="lead-form__row lead-form__row--full lead-form__checks"><legend>Services interested in</legend>{boxes}</fieldset>
+  <div class="lead-form__row lead-form__row--full"><label for="cf-message">Message</label><textarea id="cf-message" name="message" rows="5"></textarea></div>
+  <input class="lead-form__hp" type="text" name="company_website" tabindex="-1" autocomplete="off" aria-hidden="true">
+  <div class="lead-form__row--full"><button class="btn btn--primary" type="submit">Submit</button></div>
+  <p class="lead-form__note lead-form__row--full" id="contact-form-note" role="status" aria-live="polite"></p>
+</form>"""
 
 # Cover of the published flipbook (the planning-guide page embeds the same Heyzine
 # book). Flat cover, real title. The CSS mockup adds the tilt and shadow.
@@ -812,7 +842,7 @@ def contact():
     </div>
     <div>
       <h3>Start your custom home journey now</h3>
-      {F(CONTACT, "Contact Distinct Designs Construction")}
+      {contact_form()}
     </div>
   </div>
 </section>
