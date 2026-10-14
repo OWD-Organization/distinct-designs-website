@@ -266,8 +266,7 @@
       })
         .then(function (res) {
           if (!res.ok) throw new Error("HTTP " + res.status);
-          contactNote.textContent = "Thank you. Nick's team will reach out within one business day.";
-          contactForm.reset();
+          window.location.href = "/thank-you/";
         })
         .catch(function () {
           contactNote.textContent = "We couldn't send your message. Please call (760) 221-4290 or email nick@distinctdesignspro.com.";
