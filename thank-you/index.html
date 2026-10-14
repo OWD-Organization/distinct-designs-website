@@ -118,7 +118,13 @@ img { max-width: 100%; display: block; }
   padding: var(--space-xl) var(--space-sm);
   text-align: center;
 }
-.thanks__inner { max-width: var(--content-narrow); margin: 0 auto; }
+.thanks__inner {
+  max-width: var(--content-narrow);
+  margin: 0 auto;
+  display: grid;
+  gap: var(--space-lg);
+  justify-items: center;
+}
 
 .thanks__mark {
   width: 56px; height: 56px;
@@ -157,7 +163,7 @@ img { max-width: 100%; display: block; }
   aspect-ratio: 9 / 16;
   height: min(70vh, 620px);
   width: auto;
-  margin: 0 auto var(--space-lg);
+  margin: 0 auto;
   border: 1px solid var(--color-hairline-on-dark);
   border-radius: var(--radius);
   overflow: hidden;
@@ -185,6 +191,23 @@ img { max-width: 100%; display: block; }
 .thanks__cta:hover, .thanks__cta:focus-visible {
   background-color: var(--color-clay-dark);
   border-color: var(--color-clay-dark);
+}
+
+/* Two columns on wider screens: copy on the left, the vertical video on the
+   right, both vertically centered. */
+@media (min-width: 900px) {
+  .thanks { padding: var(--space-xl) var(--space-md); text-align: left; }
+  .thanks__inner {
+    max-width: 1120px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    justify-items: stretch;
+    gap: var(--space-xl);
+  }
+  .thanks__mark { margin-left: 0; }
+  .thanks__body, .thanks__next { margin-left: 0; }
+  .thanks__body { margin-bottom: var(--space-md); }
+  .video { height: min(76vh, 660px); }
 }
 
 /* ---------- Footer ---------- */
@@ -234,6 +257,8 @@ img { max-width: 100%; display: block; }
 <main id="main" class="thanks">
   <div class="thanks__inner">
 
+    <div class="thanks__copy">
+
     <div class="thanks__mark" aria-hidden="true">
       <svg viewBox="0 0 24 24" role="presentation"><path d="M4 12.5 9.5 18 20 6.5"/></svg>
     </div>
@@ -243,9 +268,17 @@ img { max-width: 100%; display: block; }
     <h1 class="thanks__title">Thank You</h1>
 
     <p class="thanks__body">
-      We have received your request. Watch the short message below, and our
-      team will be in touch within one business day.
+      We have received your request. Watch the short message from our team,
+      and we will be in touch within one business day.
     </p>
+
+    <p class="thanks__next">
+      Prefer to talk now? Call us and we will walk you through the next steps.
+    </p>
+
+    <a class="thanks__cta" href="tel:+17602214290">Call (760) 221-4290</a>
+
+    </div>
 
     <!-- Hosted on Cloudinary. q_auto serves a ~9 MB encode of the 95 MB
          original. No autoplay: browsers block unmuted autoplay, and a video
@@ -261,12 +294,6 @@ img { max-width: 100%; display: block; }
         <source src="https://res.cloudinary.com/de0iy9a1o/video/upload/q_auto/v1792016318/Thank_you_video_2_qkepgt.mp4" type="video/mp4">
       </video>
     </div>
-
-    <p class="thanks__next">
-      Prefer to talk now? Call us and we will walk you through the next steps.
-    </p>
-
-    <a class="thanks__cta" href="tel:+17602214290">Call (760) 221-4290</a>
 
   </div>
 </main>
