@@ -70,6 +70,31 @@
       "source": "/sitemap_index.xml",
       "destination": "/sitemap.xml",
       "permanent": true
+    },
+    {
+      "source": "/agent-referral-agreement{/}?",
+      "destination": "/partners/referral-agreement/",
+      "permanent": true
+    },
+    {
+      "source": "/agent-education-flyer{/}?",
+      "destination": "/partners/",
+      "permanent": true
+    },
+    {
+      "source": "/alturas{/}?",
+      "destination": "/projects/alturas/",
+      "permanent": true
+    },
+    {
+      "source": "/sun-mesa{/}?",
+      "destination": "/projects/",
+      "permanent": false
+    },
+    {
+      "source": "/home{/}?",
+      "destination": "/",
+      "permanent": true
     }
   ],
   "headers": [

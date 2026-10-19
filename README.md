@@ -12,6 +12,14 @@ The site stays **noindexed until launch**:
 
 The client's live ad landing pages are not in this repository. They stay in [OWD-Organization/distinct-designs-lp](https://github.com/OWD-Organization/distinct-designs-lp).
 
+## v3 launch candidate, branch `v3-launch-candidate`
+
+v2 plus Nick's 8 email edits, plus the webhook contact form and `/thank-you/` from `main`. This branch matches the Oct 17 2026 Vercel preview `distinct-designs-website-m5m5v4twe` file for file.
+
+- The contact form (`#contact-form` in `script.js`) posts JSON to the GHL inbound webhook. It is on `/start-your-journey/` and in the homepage "Start your journey" section. On success it redirects to `/thank-you/`.
+- `/contact` redirects to `/start-your-journey/`. Old WordPress URLs (`/alturas`, `/sun-mesa`, `/home`, `/agent-referral-agreement`, `/agent-education-flyer`) redirect in `vercel.json`.
+- **Do not run `generate.py` on this branch.** The v3 edits were made in the HTML, and `generate.py` and `pages.py` are still the v2 versions. Regenerating would overwrite the v3 pages. Port the edits into the generators first.
+
 ## v2 (October 2026 change brief), branch `v2-brief-oct-2026`
 
 Preview only. Not merged, no domain pointed. Built from "Distinct Designs Website & Google LSA Change Brief" (Steps 1-14).

@@ -1755,3 +1755,47 @@ a.city-link {
    left-aligned with the heading and limit the line length inside it. */
 .section--tinted > .prose { max-width: var(--content-max); }
 .section--tinted > .prose > * { max-width: 68ch; }
+
+/* Nick Oct 6: town pills on tinted sections match the Custom Homes page */
+.section--tinted > .town-links { padding-left: var(--space-md); padding-right: var(--space-md); }
+.section--tinted .town-links li { background: var(--color-bg, #fff); border-color: var(--color-hairline); }
+.section--tinted > .town-links + .page-intro { max-width: var(--content-max); }
+
+/* v3: Juan's native contact form (ported from main) */
+/* Contact page: the same lead form on a light section */
+.lead-form--light { grid-template-columns: 1fr 1fr; margin-top: var(--space-sm); }
+.lead-form--light label,
+.lead-form--light legend { color: var(--color-text); }
+.lead-form--light input,
+.lead-form--light textarea {
+  color: var(--color-text);
+  background: #fff;
+  border-color: var(--color-hairline);
+}
+.lead-form--light input:focus,
+.lead-form--light textarea:focus { background: #fff; border-color: var(--color-clay-text); }
+.lead-form--light .lead-form__note { color: var(--color-clay-text); }
+.lead-form__checks { border: 0; padding: 0; margin: 0; gap: var(--space-2xs); }
+.lead-form__checks legend {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: var(--space-2xs);
+}
+.lead-form .lead-form__check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2xs);
+  font-weight: 400;
+  letter-spacing: 0;
+  color: inherit;
+}
+.lead-form .lead-form__check input { width: auto; flex: none; margin-top: 0.3em; accent-color: var(--color-clay-dark); }
+.lead-form__hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+@media (max-width: 600px) { .lead-form--light { grid-template-columns: 1fr; } }
+
+.lead-form__checks legend { color: inherit; }
+.lead-section .lead-form__checks legend, .lead-section .lead-form .lead-form__check { color: var(--color-text-on-dark); }
+.lead-form button[type="submit"] { justify-self: start; }
+/* v3: keep the Hilltop sunset horizon in frame on the short page hero and the tile */
+img[src$="process-break-patio.webp"] { object-position: 50% 30%; }

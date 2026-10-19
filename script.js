@@ -245,4 +245,55 @@
       leadForm.reset();
     });
   }
+  /* ---------------------------------------------------------------
+     Contact form: posts JSON to the GoHighLevel inbound webhook in
+     data-webhook. company_website is a honeypot; bots fill it, people don't.
+     --------------------------------------------------------------- */
+  var contactForm = document.getElementById("contact-form");
+  var contactNote = document.getElementById("contact-form-note");
+
+  if (contactForm && contactNote && window.fetch) {
+    contactForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      if (!contactForm.checkValidity()) {
+        contactNote.textContent = "Please complete all required fields before submitting.";
+        contactForm.reportValidity();
+        return;
+      }
+
+      var data = new FormData(contactForm);
+      if (data.get("company_website")) { contactForm.reset(); return; }
+
+      var services = data.getAll("services_interest_in");
+      var payload = {
+        first_name: (data.get("first_name") || "").trim(),
+        last_name: (data.get("last_name") || "").trim(),
+        phone: (data.get("phone") || "").trim(),
+        email: (data.get("email") || "").trim(),
+        services_interest_in: services.join(", "),
+        message: (data.get("message") || "").trim(),
+        source: "Website contact form",
+        page_url: window.location.href
+      };
+
+      var button = contactForm.querySelector('button[type="submit"]');
+      button.disabled = true;
+      contactNote.textContent = "Sending…";
+
+      fetch(contactForm.getAttribute("data-webhook"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          window.location.href = "/thank-you/";
+        })
+        .catch(function () {
+          contactNote.textContent = "We couldn't send your message. Please call (760) 221-4290 or email nick@distinctdesignspro.com.";
+        })
+        .then(function () { button.disabled = false; });
+    });
+  }
 })();

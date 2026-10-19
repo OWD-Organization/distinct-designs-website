@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thank You | Distinct Designs Construction</title>
+<meta name="description" content="Thank you for reaching out to Distinct Designs Construction. Watch the short welcome video while our team prepares to contact you.">
+
+<!-- A confirmation page has no business in search results, and indexing it
+     would let people land here without ever filling the form. -->
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Shared by every landing page, so it carries its own CSS rather than
+     reaching into one page folder's stylesheet. That keeps each landing page
+     independently deployable and lets this file be pasted anywhere as-is. -->
+<style>
+:root {
+  --color-bg: #ffffff;
+  --color-charcoal: #0f172a;
+  --color-charcoal-soft: #070614;
+  --color-text: #0f172a;
+  --color-text-muted: #364151;
+  --color-text-on-dark: #ffffff;
+  --color-text-on-dark-muted: #d1dae5;
+  --color-clay: #c8ab72;
+  --color-clay-dark: #a98a50;
+  --color-on-accent: #0f172a;
+  --color-hairline: #d1dae5;
+  --color-hairline-on-dark: rgba(255, 255, 255, 0.16);
+
+  --font-display: "Cormorant Garamond", "Times New Roman", serif;
+  --font-body: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --fs-hero: clamp(2.35rem, 4.4vw + 0.75rem, 4.25rem);
+  --fs-body-lg: 1.2rem;
+  --fs-small: 0.9rem;
+  --fs-eyebrow: 0.8rem;
+
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-sm: 1.25rem;
+  --space-md: 2rem;
+  --space-lg: 3.25rem;
+  --space-xl: 5rem;
+
+  --content-max: 1360px;
+  --content-narrow: 760px;
+  --nav-h: 71px;
+  --radius: 2px;
+  --ease-editorial: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  background: var(--color-charcoal);
+  color: var(--color-text-on-dark);
+  padding: var(--space-xs) var(--space-sm);
+  z-index: 100;
+}
+.skip-link:focus { left: var(--space-sm); top: var(--space-sm); }
+
+/* ---------- Nav ---------- */
+.site-nav {
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: 0 var(--space-sm);
+  max-width: var(--content-max);
+  margin: 0 auto;
+}
+.site-nav__logo img { height: 40px; width: auto; }
+.nav-call {
+  display: inline-block;
+  padding: var(--space-2xs) var(--space-sm);
+  border: 1px solid var(--color-charcoal);
+  border-radius: var(--radius);
+  color: var(--color-charcoal);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background-color 0.3s var(--ease-editorial),
+              color 0.3s var(--ease-editorial);
+}
+.nav-call:hover, .nav-call:focus-visible {
+  background-color: var(--color-charcoal);
+  color: var(--color-text-on-dark);
+}
+
+/* ---------- Thank you ---------- */
+.thanks {
+  background-color: var(--color-charcoal-soft);
+  color: var(--color-text-on-dark);
+  padding: var(--space-xl) var(--space-sm);
+  text-align: center;
+}
+.thanks__inner {
+  max-width: var(--content-narrow);
+  margin: 0 auto;
+  display: grid;
+  gap: var(--space-lg);
+  justify-items: center;
+}
+
+.thanks__mark {
+  width: 56px; height: 56px;
+  margin: 0 auto var(--space-sm);
+  border: 1px solid var(--color-clay);
+  border-radius: 50%;
+  display: grid; place-items: center;
+}
+.thanks__mark svg {
+  width: 24px; height: 24px;
+  stroke: var(--color-clay); stroke-width: 1.5; fill: none;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.thanks__eyebrow {
+  margin: 0 0 var(--space-sm);
+  font-size: var(--fs-eyebrow); font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--color-clay);
+}
+.thanks__title {
+  margin: 0 0 var(--space-sm);
+  font-family: var(--font-display);
+  font-size: var(--fs-hero); font-weight: 300;
+  line-height: 1.08; letter-spacing: -0.01em;
+}
+.thanks__body {
+  margin: 0 auto var(--space-lg);
+  max-width: 48ch;
+  font-size: var(--fs-body-lg);
+  color: var(--color-text-on-dark-muted);
+}
+
+/* The video is vertical (1080x1920, 9:16). Sizing by height keeps it from
+   running past the fold on a laptop; width follows from the aspect ratio. */
+.video {
+  aspect-ratio: 9 / 16;
+  height: min(70vh, 620px);
+  width: auto;
+  margin: 0 auto;
+  border: 1px solid var(--color-hairline-on-dark);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background-color: #000;
+  max-width: 100%;
+}
+.video video { width: 100%; height: 100%; display: block; object-fit: cover; }
+
+.thanks__next {
+  margin: 0 auto var(--space-md);
+  max-width: 52ch;
+  color: var(--color-text-on-dark-muted);
+}
+.thanks__cta {
+  display: inline-block;
+  padding: var(--space-xs) var(--space-md);
+  background-color: var(--color-clay);
+  border: 1px solid var(--color-clay);
+  border-radius: var(--radius);
+  color: var(--color-on-accent);
+  font-weight: 700; letter-spacing: 0.02em; text-decoration: none;
+  transition: background-color 0.3s var(--ease-editorial),
+              border-color 0.3s var(--ease-editorial);
+}
+.thanks__cta:hover, .thanks__cta:focus-visible {
+  background-color: var(--color-clay-dark);
+  border-color: var(--color-clay-dark);
+}
+
+/* Two columns on wider screens: copy on the left, the vertical video on the
+   right, both vertically centered. */
+@media (min-width: 900px) {
+  .thanks { padding: var(--space-xl) var(--space-md); text-align: left; }
+  .thanks__inner {
+    max-width: 1120px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    justify-items: stretch;
+    gap: var(--space-xl);
+  }
+  .thanks__mark { margin-left: 0; }
+  .thanks__body, .thanks__next { margin-left: 0; }
+  .thanks__body { margin-bottom: var(--space-md); }
+  .video { height: min(76vh, 660px); }
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  background-color: var(--color-charcoal);
+  color: var(--color-text-on-dark-muted);
+  padding: var(--space-lg) var(--space-sm);
+  font-size: var(--fs-small);
+}
+.site-footer__inner {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  display: flex; flex-wrap: wrap; gap: var(--space-sm);
+  align-items: center; justify-content: space-between;
+}
+.site-footer a { color: var(--color-text-on-dark); }
+.site-footer p { margin: 0; }
+
+:focus-visible { outline: 2px solid var(--color-clay); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .thanks { padding: var(--space-lg) var(--space-sm); }
+  .video { height: min(62vh, 520px); }
+  .site-footer__inner { justify-content: center; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-nav">
+  <a class="site-nav__logo" href="../">
+    <img src="../images/logo-distinct-designs.webp"
+         alt="Distinct Designs Construction" width="350" height="128">
+  </a>
+  <a class="nav-call" href="tel:+17602214290">Call (760) 221-4290</a>
+</header>
+
+<main id="main" class="thanks">
+  <div class="thanks__inner">
+
+    <div class="thanks__copy">
+
+    <div class="thanks__mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" role="presentation"><path d="M4 12.5 9.5 18 20 6.5"/></svg>
+    </div>
+
+    <p class="thanks__eyebrow">Request Received</p>
+
+    <h1 class="thanks__title">Thank You</h1>
+
+    <p class="thanks__body">
+      We have received your request. Watch the short message from our team,
+      and we will be in touch within one business day.
+    </p>
+
+    <p class="thanks__next">
+      Prefer to talk now? Call us and we will walk you through the next steps.
+    </p>
+
+    <a class="thanks__cta" href="tel:+17602214290">Call (760) 221-4290</a>
+
+    </div>
+
+    <!-- Hosted on Cloudinary. q_auto serves a ~9 MB encode of the 95 MB
+         original. No autoplay: browsers block unmuted autoplay, and a video
+         that starts talking on its own is hostile on a confirmation page. -->
+    <div class="video">
+      <video
+        controls
+        playsinline
+        preload="metadata"
+        poster="https://res.cloudinary.com/de0iy9a1o/video/upload/so_0,w_720/v1792016318/Thank_you_video_2_qkepgt.jpg"
+        width="1080" height="1920"
+        aria-label="A message from Distinct Designs Construction">
+        <source src="https://res.cloudinary.com/de0iy9a1o/video/upload/q_auto/v1792016318/Thank_you_video_2_qkepgt.mp4" type="video/mp4">
+      </video>
+    </div>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <p>Distinct Designs Construction &middot; Licensed CA General Contractor #1145786</p>
+    <p><a href="https://distinctdesignsconstruction.com/">distinctdesignsconstruction.com</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
