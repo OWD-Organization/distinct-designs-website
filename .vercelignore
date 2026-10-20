@@ -1,0 +1,6 @@
+generate.py
+pages.py
+README.md
+__pycache__
+.gitignore
+.vercelignore

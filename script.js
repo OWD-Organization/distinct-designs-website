@@ -64,8 +64,7 @@
         var isOpen = navToggle.getAttribute("aria-expanded") === "true";
         setMenuOpen(!isOpen);
         if (!isOpen) {
-          setMobileDropdown("services-menu-mobile", true);
-          setMobileDropdown("areas-menu-mobile", false);
+          setMobileDropdown("homes-menu-mobile", true);
         }
       });
 
@@ -223,6 +222,29 @@
     tiles.forEach(function (tile) { tile.disabled = true; tile.style.cursor = "default"; });
   }
 
+  /* ---------------------------------------------------------------
+     Lead form handling
+     Note: no backend wired up yet. Replace this handler's success
+     branch with a real fetch() to your CRM/email endpoint.
+     --------------------------------------------------------------- */
+  var leadForm = document.getElementById("lead-form");
+  var leadFormNote = document.getElementById("lead-form-note");
+
+  if (leadForm && leadFormNote) {
+    leadForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      if (!leadForm.checkValidity()) {
+        leadFormNote.textContent = "Please complete all required fields before submitting.";
+        leadForm.reportValidity();
+        return;
+      }
+
+      // TODO: wire to real submission endpoint (CRM, email service, etc.)
+      leadFormNote.textContent = "Thank you. Nick's team will be in touch the same day.";
+      leadForm.reset();
+    });
+  }
   /* ---------------------------------------------------------------
      Contact form: posts JSON to the GoHighLevel inbound webhook in
      data-webhook. company_website is a honeypot; bots fill it, people don't.
