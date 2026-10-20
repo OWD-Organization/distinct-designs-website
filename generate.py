@@ -154,6 +154,8 @@ def head(slug, title, description, extra_ld=""):
     if extra_ld:
         extra = f'\n<script type="application/ld+json">{extra_ld}</script>'
     can = canonical(slug)
+    # Confirmation pages stay out of search; everything else is indexable.
+    robots = '<meta name="robots" content="noindex, nofollow">\n' if slug in ("thank-you", "guide-thank-you") else ""
     og_img = SITE_URL + "/images/site/Custom-Desert-Home.webp"
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -162,8 +164,7 @@ def head(slug, title, description, extra_ld=""):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title}</title>
 <meta name="description" content="{description}">
-<meta name="robots" content="noindex, nofollow">
-<link rel="canonical" href="{can}">
+{robots}<link rel="canonical" href="{can}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Distinct Designs Construction">
 <meta property="og:title" content="{title}">

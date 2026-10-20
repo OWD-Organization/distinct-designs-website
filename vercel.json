@@ -99,7 +99,7 @@
   ],
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/(thank-you|guide-thank-you)(/.*)?",
       "headers": [
         {
           "key": "X-Robots-Tag",

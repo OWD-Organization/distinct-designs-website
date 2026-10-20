@@ -4,11 +4,7 @@ Static company site for Distinct Designs Construction (HTML, CSS, and vanilla JS
 
 Deployed as the Vercel project **distinct-designs-website** (for example `https://distinct-designs-website.vercel.app/`). Framework preset: Other. No build command. Output directory: the repository root.
 
-The site stays **noindexed until launch**:
-
-- `<meta name="robots" content="noindex, nofollow">` on every page
-- `X-Robots-Tag: noindex, nofollow` on all paths (`vercel.json`)
-- `robots.txt` with `User-agent: *` and `Disallow: /`
+The site is **indexable** (launch, October 2026). `robots.txt` allows all crawlers and points to `sitemap.xml`. Only the confirmation pages (`/thank-you/`, `/guide-thank-you/`) and `404.html` keep `<meta name="robots" content="noindex, nofollow">`, and `vercel.json` sends `X-Robots-Tag: noindex, nofollow` on the two confirmation paths. Vercel preview URLs are noindexed by Vercel itself.
 
 The client's live ad landing pages are not in this repository. They stay in [OWD-Organization/distinct-designs-lp](https://github.com/OWD-Organization/distinct-designs-lp).
 
