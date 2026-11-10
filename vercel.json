@@ -17,8 +17,28 @@
       "permanent": true
     },
     {
-      "source": "/services{/}?",
-      "destination": "/",
+      "source": "/kitchen-remodels{/}?",
+      "destination": "/services/whole-home-remodel/",
+      "permanent": true
+    },
+    {
+      "source": "/home-remodels{/}?",
+      "destination": "/services/whole-home-remodel/",
+      "permanent": true
+    },
+    {
+      "source": "/flooring{/}?",
+      "destination": "/services/whole-home-remodel/",
+      "permanent": true
+    },
+    {
+      "source": "/tile-stone-masonry{/}?",
+      "destination": "/services/whole-home-remodel/",
+      "permanent": true
+    },
+    {
+      "source": "/general-construction{/}?",
+      "destination": "/services/",
       "permanent": true
     },
     {
