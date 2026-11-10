@@ -2,6 +2,17 @@
   "trailingSlash": true,
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.distinctdesignsconstruction.com"
+        }
+      ],
+      "destination": "https://distinctdesignsconstruction.com/:path*",
+      "permanent": true
+    },
+    {
       "source": "/services/remodels{/}?",
       "destination": "/services/whole-home-remodel/",
       "permanent": true
@@ -84,10 +95,25 @@
     {
       "source": "/projects/sun-mesa{/}?",
       "destination": "/projects/",
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/sitemap_index.xml",
+      "destination": "/sitemap.xml",
+      "permanent": true
+    },
+    {
+      "source": "/sitemaps.xml",
+      "destination": "/sitemap.xml",
+      "permanent": true
+    },
+    {
+      "source": "/page-sitemap1.xml",
+      "destination": "/sitemap.xml",
+      "permanent": true
+    },
+    {
+      "source": "/sitemaps_xsl.xsl",
       "destination": "/sitemap.xml",
       "permanent": true
     },
@@ -109,7 +135,7 @@
     {
       "source": "/sun-mesa{/}?",
       "destination": "/projects/",
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/home{/}?",
@@ -124,6 +150,21 @@
         {
           "key": "X-Robots-Tag",
           "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": ".*\\.vercel\\.app"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
         }
       ]
     }
