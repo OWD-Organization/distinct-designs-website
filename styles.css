@@ -1435,6 +1435,12 @@ a.city-link {
   border-radius: var(--radius);
   padding: var(--space-md);
 }
+.service-card img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  margin-bottom: var(--space-sm);
+}
 .service-card h3,
 .info-card h3,
 .price-card h3 { margin-bottom: var(--space-2xs); }
