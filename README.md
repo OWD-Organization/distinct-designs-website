@@ -42,4 +42,10 @@ Preview only. Not merged, no domain pointed. Built from "Distinct Designs Websit
 ## Open client TODOs
 
 - **No street address.** Published locality is now "Yucca Valley, CA" (matches the Google Business Profile). No street, ZIP, or postal address.
-- **Cookie policy.** `/opt-out-preferences/` still contains the Complianz shortcode `[cmplz-document type="cookie-statement" region="us"]`, which does not render as a statement.
+- **Cookie policy.** `/opt-out-preferences/` now has a real cookie statement (GA4, Google tag, Meta Pixel, embedded forms and video). There is still no consent banner.
+
+## Tracking and launch redirects (Nov 2026)
+
+- Every HTML page loads GA4 `G-ZN3C7W7TY1`, Google tag `GT-PLHFGS6K`, and Meta Pixel `2036241113908440` in the `<head>` (pixel `<noscript>` right after `<body>`). Add the same block to any new page.
+- `vercel.json` 301s the old WordPress sitemaps (`/sitemaps.xml`, `/page-sitemap1.xml`, `/sitemaps_xsl.xsl`) to `/sitemap.xml`, 301s `www.` to the non-www apex, and sends `X-Robots-Tag: noindex` only on `*.vercel.app` hosts.
+- Sun Mesa (`/sun-mesa/`, `/projects/sun-mesa/`) is now a permanent redirect to `/projects/`.
