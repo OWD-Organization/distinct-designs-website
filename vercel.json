@@ -2,17 +2,6 @@
   "trailingSlash": true,
   "redirects": [
     {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.distinctdesignsconstruction.com"
-        }
-      ],
-      "destination": "https://distinctdesignsconstruction.com/:path*",
-      "permanent": true
-    },
-    {
       "source": "/services/remodels{/}?",
       "destination": "/services/whole-home-remodel/",
       "permanent": true

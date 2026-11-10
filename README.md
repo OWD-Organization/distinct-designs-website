@@ -47,5 +47,6 @@ Preview only. Not merged, no domain pointed. Built from "Distinct Designs Websit
 ## Tracking and launch redirects (Nov 2026)
 
 - Every HTML page loads GA4 `G-ZN3C7W7TY1`, Google tag `GT-PLHFGS6K`, and Meta Pixel `2036241113908440` in the `<head>` (pixel `<noscript>` right after `<body>`). Add the same block to any new page.
-- `vercel.json` 301s the old WordPress sitemaps (`/sitemaps.xml`, `/page-sitemap1.xml`, `/sitemaps_xsl.xsl`) to `/sitemap.xml`, 301s `www.` to the non-www apex, and sends `X-Robots-Tag: noindex` only on `*.vercel.app` hosts.
+- `vercel.json` 301s the old WordPress sitemaps (`/sitemaps.xml`, `/page-sitemap1.xml`, `/sitemaps_xsl.xsl`) to `/sitemap.xml`, and sends `X-Robots-Tag: noindex` only on `*.vercel.app` hosts.
+- The `www` to non-www redirect is set in the Vercel project domains (apex is primary), not in `vercel.json`. Do not add it to both: they loop if the Vercel setting points the other way.
 - Sun Mesa (`/sun-mesa/`, `/projects/sun-mesa/`) is now a permanent redirect to `/projects/`.
